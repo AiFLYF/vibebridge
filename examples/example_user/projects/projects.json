@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0.0",
+  "items": [
+    {
+      "id": "proj_0001",
+      "name": "音乐可视化网页",
+      "created_at": "2026-06-27T18:57:33Z",
+      "updated_at": "2026-08-18T18:57:33Z",
+      "stack": [
+        "html",
+        "js",
+        "canvas"
+      ],
+      "original_idea": "用户自己提出的想法",
+      "stage": "published",
+      "user_involvement": 0.0,
+      "ai_assistance": 0.0,
+      "completion": 1.0,
+      "revisions": 0,
+      "independent_parts": [],
+      "published": true,
+      "shared": false,
+      "feedback_received": 3,
+      "external_conversations": 0,
+      "collaborators": 0,
+      "events": [
+        {
+          "ts": "2026-06-27T18:57:33Z",
+          "type": "created",
+          "detail": "用户自己提出的想法"
+        },
+        {
+          "ts": "2026-08-15T18:57:33Z",
+          "type": "completed",
+          "detail": {
+            "stage": "completed",
+            "completion": 1.0
+          }
+        },
+        {
+          "ts": "2026-08-17T18:57:33Z",
+          "type": "published",
+          "detail": {
+            "stage": "published",
+            "published": true
+          }
+        },
+        {
+          "ts": "2026-08-18T18:57:33Z",
+          "type": "feedback",
+          "detail": {
+            "feedback_received": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": "proj_0002",
+      "name": "个人作品集站点",
+      "created_at": "2026-07-02T18:57:33Z",
+      "updated_at": "2026-08-19T18:57:33Z",
+      "stack": [
+        "html",
+        "css"
+      ],
+      "original_idea": "用户自己提出的想法",
+      "stage": "completed",
+      "user_involvement": 0.0,
+      "ai_assistance": 0.0,
+      "completion": 1.0,
+      "revisions": 0,
+      "independent_parts": [],
+      "published": false,
+      "shared": false,
+      "feedback_received": 0,
+      "external_conversations": 0,
+      "collaborators": 0,
+      "events": [
+        {
+          "ts": "2026-07-02T18:57:33Z",
+          "type": "created",
+          "detail": "用户自己提出的想法"
+        },
+        {
+          "ts": "2026-08-19T18:57:33Z",
+          "type": "completed",
+          "detail": {
+            "stage": "completed",
+            "completion": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "proj_0003",
+      "name": "ESP32 温湿度记录器",
+      "created_at": "2026-07-07T18:57:33Z",
+      "updated_at": "2026-07-07T18:57:33Z",
+      "stack": [
+        "c",
+        "esp-idf"
+      ],
+      "original_idea": "用户自己提出的想法",
+      "stage": "created",
+      "user_involvement": 0.0,
+      "ai_assistance": 0.0,
+      "completion": 0.0,
+      "revisions": 0,
+      "independent_parts": [],
+      "published": false,
+      "shared": false,
+      "feedback_received": 0,
+      "external_conversations": 0,
+      "collaborators": 0,
+      "events": [
+        {
+          "ts": "2026-07-07T18:57:33Z",
+          "type": "created",
+          "detail": "用户自己提出的想法"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,706 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-08-21T18:57:49Z",
+  "metrics": {
+    "engagement": {
+      "label": "参与度",
+      "definition": "窗口内产生的全部行为观察与会话活动频率。",
+      "value": 54.8,
+      "sample_count": 34,
+      "distinct_days": 17,
+      "confidence": 0.95,
+      "sources": [
+        "obs_000040",
+        "obs_000041",
+        "obs_000042",
+        "obs_000043",
+        "obs_000044",
+        "obs_000045",
+        "obs_000046",
+        "obs_000047",
+        "obs_000048",
+        "obs_000049",
+        "obs_000050",
+        "obs_000051",
+        "obs_000052",
+        "obs_000053",
+        "obs_000054",
+        "obs_000055",
+        "obs_000056",
+        "obs_000057",
+        "obs_000058",
+        "obs_000059",
+        "obs_000060",
+        "obs_000061",
+        "obs_000062",
+        "obs_000063",
+        "obs_000064"
+      ],
+      "not_a_clinical_scale": true
+    },
+    "self_expression": {
+      "label": "自我表达",
+      "definition": "涉及表达维度的观察频率，例如描述想法、解释选择、分享进展。",
+      "value": 55.8,
+      "sample_count": 14,
+      "distinct_days": 14,
+      "confidence": 0.903,
+      "sources": [
+        "obs_000031",
+        "obs_000034",
+        "obs_000035",
+        "obs_000040",
+        "obs_000041",
+        "obs_000044",
+        "obs_000045",
+        "obs_000050",
+        "obs_000051",
+        "obs_000054",
+        "obs_000055",
+        "obs_000060",
+        "obs_000061",
+        "obs_000064"
+      ],
+      "not_a_clinical_scale": true
+    },
+    "initiative": {
+      "label": "主动性",
+      "definition": "用户主动发起的项目与首次出现的新行为频率。",
+      "value": 0.0,
+      "sample_count": 0,
+      "distinct_days": 0,
+      "confidence": 0.0,
+      "sources": [],
+      "not_a_clinical_scale": true
+    },
+    "communication": {
+      "label": "沟通",
+      "definition": "涉及沟通维度的观察频率，例如提问、澄清、往复交流。",
+      "value": 29.5,
+      "sample_count": 6,
+      "distinct_days": 6,
+      "confidence": 0.632,
+      "sources": [
+        "obs_000038",
+        "obs_000039",
+        "obs_000048",
+        "obs_000049",
+        "obs_000058",
+        "obs_000059"
+      ],
+      "not_a_clinical_scale": true
+    },
+    "social_interaction": {
+      "label": "社会互动",
+      "definition": "涉及与外部世界互动的观察频率，例如发布、回复、外部反馈。",
+      "value": 0.0,
+      "sample_count": 0,
+      "distinct_days": 0,
+      "confidence": 0.0,
+      "sources": [],
+      "not_a_clinical_scale": true
+    },
+    "collaboration": {
+      "label": "协作",
+      "definition": "涉及与他人共同推进事情的观察频率。",
+      "value": 0.0,
+      "sample_count": 0,
+      "distinct_days": 0,
+      "confidence": 0.0,
+      "sources": [],
+      "not_a_clinical_scale": true
+    },
+    "self_advocacy": {
+      "label": "自我倡导",
+      "definition": "表达需求、边界、困难或请求调整方式的观察频率。",
+      "value": 0.0,
+      "sample_count": 0,
+      "distinct_days": 0,
+      "confidence": 0.0,
+      "sources": [],
+      "not_a_clinical_scale": true
+    },
+    "independence": {
+      "label": "独立性",
+      "definition": "独立完成、独立决策、自主推进相关的观察频率。",
+      "value": 72.9,
+      "sample_count": 14,
+      "distinct_days": 14,
+      "confidence": 0.903,
+      "sources": [
+        "obs_000032",
+        "obs_000033",
+        "obs_000036",
+        "obs_000037",
+        "obs_000042",
+        "obs_000043",
+        "obs_000046",
+        "obs_000047",
+        "obs_000052",
+        "obs_000053",
+        "obs_000056",
+        "obs_000057",
+        "obs_000062",
+        "obs_000063"
+      ],
+      "not_a_clinical_scale": true
+    },
+    "persistence": {
+      "label": "坚持度",
+      "definition": "在遇到困难后重新尝试、继续修改、继续推进的观察频率。",
+      "value": 0.0,
+      "sample_count": 0,
+      "distinct_days": 0,
+      "confidence": 0.0,
+      "sources": [],
+      "not_a_clinical_scale": true
+    }
+  },
+  "windows": {
+    "30D": {
+      "schema_version": "1.0.0",
+      "generated_at": "2026-08-21T18:57:49Z",
+      "window": "30D",
+      "window_days": 30,
+      "window_start": "2026-07-22T18:57:49Z",
+      "window_end": "2026-08-21T18:57:49Z",
+      "observation_count": 34,
+      "total_observation_count": 64,
+      "metrics": {
+        "engagement": {
+          "label": "参与度",
+          "definition": "窗口内产生的全部行为观察与会话活动频率。",
+          "value": 54.8,
+          "sample_count": 34,
+          "distinct_days": 17,
+          "confidence": 0.95,
+          "sources": [
+            "obs_000040",
+            "obs_000041",
+            "obs_000042",
+            "obs_000043",
+            "obs_000044",
+            "obs_000045",
+            "obs_000046",
+            "obs_000047",
+            "obs_000048",
+            "obs_000049",
+            "obs_000050",
+            "obs_000051",
+            "obs_000052",
+            "obs_000053",
+            "obs_000054",
+            "obs_000055",
+            "obs_000056",
+            "obs_000057",
+            "obs_000058",
+            "obs_000059",
+            "obs_000060",
+            "obs_000061",
+            "obs_000062",
+            "obs_000063",
+            "obs_000064"
+          ],
+          "not_a_clinical_scale": true
+        },
+        "self_expression": {
+          "label": "自我表达",
+          "definition": "涉及表达维度的观察频率，例如描述想法、解释选择、分享进展。",
+          "value": 55.8,
+          "sample_count": 14,
+          "distinct_days": 14,
+          "confidence": 0.903,
+          "sources": [
+            "obs_000031",
+            "obs_000034",
+            "obs_000035",
+            "obs_000040",
+            "obs_000041",
+            "obs_000044",
+            "obs_000045",
+            "obs_000050",
+            "obs_000051",
+            "obs_000054",
+            "obs_000055",
+            "obs_000060",
+            "obs_000061",
+            "obs_000064"
+          ],
+          "not_a_clinical_scale": true
+        },
+        "initiative": {
+          "label": "主动性",
+          "definition": "用户主动发起的项目与首次出现的新行为频率。",
+          "value": 0.0,
+          "sample_count": 0,
+          "distinct_days": 0,
+          "confidence": 0.0,
+          "sources": [],
+          "not_a_clinical_scale": true
+        },
+        "communication": {
+          "label": "沟通",
+          "definition": "涉及沟通维度的观察频率，例如提问、澄清、往复交流。",
+          "value": 29.5,
+          "sample_count": 6,
+          "distinct_days": 6,
+          "confidence": 0.632,
+          "sources": [
+            "obs_000038",
+            "obs_000039",
+            "obs_000048",
+            "obs_000049",
+            "obs_000058",
+            "obs_000059"
+          ],
+          "not_a_clinical_scale": true
+        },
+        "social_interaction": {
+          "label": "社会互动",
+          "definition": "涉及与外部世界互动的观察频率，例如发布、回复、外部反馈。",
+          "value": 0.0,
+          "sample_count": 0,
+          "distinct_days": 0,
+          "confidence": 0.0,
+          "sources": [],
+          "not_a_clinical_scale": true
+        },
+        "collaboration": {
+          "label": "协作",
+          "definition": "涉及与他人共同推进事情的观察频率。",
+          "value": 0.0,
+          "sample_count": 0,
+          "distinct_days": 0,
+          "confidence": 0.0,
+          "sources": [],
+          "not_a_clinical_scale": true
+        },
+        "self_advocacy": {
+          "label": "自我倡导",
+          "definition": "表达需求、边界、困难或请求调整方式的观察频率。",
+          "value": 0.0,
+          "sample_count": 0,
+          "distinct_days": 0,
+          "confidence": 0.0,
+          "sources": [],
+          "not_a_clinical_scale": true
+        },
+        "independence": {
+          "label": "独立性",
+          "definition": "独立完成、独立决策、自主推进相关的观察频率。",
+          "value": 72.9,
+          "sample_count": 14,
+          "distinct_days": 14,
+          "confidence": 0.903,
+          "sources": [
+            "obs_000032",
+            "obs_000033",
+            "obs_000036",
+            "obs_000037",
+            "obs_000042",
+            "obs_000043",
+            "obs_000046",
+            "obs_000047",
+            "obs_000052",
+            "obs_000053",
+            "obs_000056",
+            "obs_000057",
+            "obs_000062",
+            "obs_000063"
+          ],
+          "not_a_clinical_scale": true
+        },
+        "persistence": {
+          "label": "坚持度",
+          "definition": "在遇到困难后重新尝试、继续修改、继续推进的观察频率。",
+          "value": 0.0,
+          "sample_count": 0,
+          "distinct_days": 0,
+          "confidence": 0.0,
+          "sources": [],
+          "not_a_clinical_scale": true
+        }
+      },
+      "behavior": {
+        "projects_started": {
+          "value": 0,
+          "label": "项目发起"
+        },
+        "projects_completed": {
+          "value": 0,
+          "label": "项目完成"
+        },
+        "completion_rate": {
+          "value": 0.667,
+          "label": "完成率"
+        },
+        "works_published": {
+          "value": 1,
+          "label": "作品发布"
+        },
+        "works_shared": {
+          "value": 0,
+          "label": "作品分享"
+        },
+        "feedback_received": {
+          "value": 0,
+          "label": "收到反馈"
+        },
+        "external_conversations": {
+          "value": 0,
+          "label": "外部交流"
+        },
+        "collaborations": {
+          "value": 0,
+          "label": "协作"
+        },
+        "help_requests": {
+          "value": 0,
+          "label": "主动求助"
+        },
+        "self_initiated_expression": {
+          "value": 14,
+          "label": "主动表达"
+        },
+        "experiments_offered": {
+          "value": 2,
+          "label": "机会提出"
+        },
+        "experiments_accepted": {
+          "value": 2,
+          "label": "选择尝试"
+        },
+        "experiments_declined": {
+          "value": 0,
+          "label": "选择不参与"
+        }
+      },
+      "growth": {
+        "updated_at": "2026-08-07T18:57:33Z",
+        "paused": false,
+        "decline_streak": 0,
+        "quiet_until": null,
+        "domains": {
+          "expression": {
+            "label": "自我表达",
+            "level": 1,
+            "level_label": "描述需求",
+            "stability": 0.25,
+            "attempts": 2,
+            "successes": 2,
+            "trend": "stable",
+            "cooldown_until": "2026-07-14T15:57:33Z",
+            "last_change_reason": "连续成功且稳定度达标",
+            "history": [
+              {
+                "ts": "2026-07-12T15:57:33Z",
+                "from": 0,
+                "to": 1,
+                "reason": "连续成功且稳定度达标",
+                "label": "描述需求"
+              }
+            ]
+          },
+          "communication": {
+            "label": "沟通",
+            "level": 0,
+            "level_label": "被动回应",
+            "stability": 0.0,
+            "attempts": 0,
+            "successes": 0,
+            "trend": "stable",
+            "cooldown_until": null,
+            "last_change_reason": "init",
+            "history": []
+          },
+          "social": {
+            "label": "社会互动",
+            "level": 0,
+            "level_label": "与 AI 表达",
+            "stability": 0.47,
+            "attempts": 2,
+            "successes": 1,
+            "trend": "stable",
+            "cooldown_until": null,
+            "last_change_reason": "init",
+            "history": []
+          },
+          "collaboration": {
+            "label": "协作",
+            "level": 0,
+            "level_label": "独自创作",
+            "stability": 0.0,
+            "attempts": 0,
+            "successes": 0,
+            "trend": "stable",
+            "cooldown_until": null,
+            "last_change_reason": "init",
+            "history": []
+          },
+          "independence": {
+            "label": "独立性",
+            "level": 0,
+            "level_label": "全程依赖引导",
+            "stability": 0.35,
+            "attempts": 1,
+            "successes": 1,
+            "trend": "stable",
+            "cooldown_until": null,
+            "last_change_reason": "init",
+            "history": []
+          },
+          "self_advocacy": {
+            "label": "自我倡导",
+            "level": 0,
+            "level_label": "不表达需求",
+            "stability": 0.0,
+            "attempts": 0,
+            "successes": 0,
+            "trend": "stable",
+            "cooldown_until": null,
+            "last_change_reason": "init",
+            "history": []
+          }
+        }
+      },
+      "projects": {
+        "total": 3,
+        "completed": 2,
+        "published": 1,
+        "shared": 0,
+        "with_feedback": 1,
+        "with_collaboration": 0,
+        "completion_rate": 0.667
+      },
+      "experiments": {
+        "total": 5,
+        "offered": 5,
+        "accepted": 5,
+        "declined": 0,
+        "pending": 0,
+        "by_result": {
+          "successful": 4,
+          "partial": 1
+        },
+        "acceptance_rate": 1.0,
+        "success_rate": 0.8
+      },
+      "experiment_fit": {
+        "samples": 5,
+        "by_domain": [
+          {
+            "value": "independence",
+            "samples": 1,
+            "success_rate": 1.0,
+            "avg_stress": 0.1,
+            "avg_engagement": 0.7,
+            "confidence": 0.4
+          },
+          {
+            "value": "expression",
+            "samples": 2,
+            "success_rate": 1.0,
+            "avg_stress": 0.175,
+            "avg_engagement": 0.7,
+            "confidence": 0.55
+          },
+          {
+            "value": "social",
+            "samples": 2,
+            "success_rate": 1.0,
+            "avg_stress": 0.3,
+            "avg_engagement": 0.7,
+            "confidence": 0.55
+          }
+        ],
+        "by_difficulty": [
+          {
+            "value": 2,
+            "samples": 5,
+            "success_rate": 1.0,
+            "avg_stress": 0.21,
+            "avg_engagement": 0.7,
+            "confidence": 0.95
+          }
+        ],
+        "notes": [
+          "样本内成功率最高的维度是 独立性（1 个样本）。",
+          "压力最低的方式集中在: 自我表达, 社会互动。"
+        ]
+      },
+      "memory_counts": {
+        "verified": 5,
+        "candidate": 0,
+        "weakened": 0,
+        "retired": 0,
+        "beliefs_total": 5
+      },
+      "disclaimer": "以上指标描述的是可观察的行为频率变化，不是医学量表，也不代表任何能力评级或治疗效果。"
+    }
+  },
+  "series": {
+    "buckets": [
+      "2026-07-22",
+      "2026-07-29",
+      "2026-08-05",
+      "2026-08-12",
+      "2026-08-19"
+    ],
+    "bucket_days": 7,
+    "metrics": {
+      "engagement": {
+        "label": "参与度",
+        "values": [
+          55.1,
+          55.1,
+          55.1,
+          55.1,
+          18.1
+        ],
+        "counts": [
+          8,
+          8,
+          8,
+          8,
+          2
+        ]
+      },
+      "self_expression": {
+        "label": "自我表达",
+        "values": [
+          52.8,
+          63.2,
+          52.8,
+          52.8,
+          22.1
+        ],
+        "counts": [
+          3,
+          4,
+          3,
+          3,
+          1
+        ]
+      },
+      "initiative": {
+        "label": "主动性",
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "communication": {
+        "label": "沟通",
+        "values": [
+          22.1,
+          22.1,
+          39.3,
+          39.3,
+          0.0
+        ],
+        "counts": [
+          1,
+          1,
+          2,
+          2,
+          0
+        ]
+      },
+      "social_interaction": {
+        "label": "社会互动",
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "collaboration": {
+        "label": "协作",
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "self_advocacy": {
+        "label": "自我倡导",
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "independence": {
+        "label": "独立性",
+        "values": [
+          79.8,
+          69.9,
+          69.9,
+          69.9,
+          33.0
+        ],
+        "counts": [
+          4,
+          3,
+          3,
+          3,
+          1
+        ]
+      },
+      "persistence": {
+        "label": "坚持度",
+        "values": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  }
+}

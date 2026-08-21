@@ -1,0 +1,72 @@
+# ---------------------------------------------------------------------------
+# User data must never be committed.
+#
+# Real data lives in ~/.vibebridge/ which is outside this repository by design.
+# These rules exist as a second line of defence in case someone points
+# VIBEBRIDGE_HOME at the repo, or runs tests without isolation.
+# ---------------------------------------------------------------------------
+.vibebridge/
+vibebridge_data/
+data/
+
+# Generated user data at the repository root only.
+# These are anchored with a leading slash on purpose: git does not descend into
+# an excluded directory, so an unanchored "memory/" would make it impossible to
+# re-include examples/example_user/memory/ further down.
+/observations.jsonl
+/candidates.json
+/verified.json
+/conflicts.json
+/strategies.json
+/profile.json
+/analytics.json
+/version.json
+/config.json
+/milestones.json
+
+/memory/
+/sessions/
+/projects/
+/experiments/
+/milestones/
+/growth/
+/analytics/
+/reports/
+/backups/
+/exports/
+/logs/
+
+# The anonymous fictional demo dataset is intentionally tracked.
+!examples/
+
+# Test artifacts
+vb_test*/
+vb_suite/
+vb_personas/
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Editors and OS
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temp
+*.tmp
+.tmp_*
+*.swap
+*.corrupt
+

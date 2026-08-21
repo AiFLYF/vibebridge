@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VibeBridge</title>
+<style>
+:root{
+  --bg:#faf9f7; --surface:#fff; --surface-2:#f5f3ef; --line:#eae7e1;
+  --ink:#33302b; --ink-2:#6b655c; --ink-3:#9b948a;
+  --sage:#5f8069; --sage-soft:#e6ede8;
+  --blue:#7488a3; --blue-soft:#e8ecf1;
+  --sand:#b89b76; --sand-soft:#f2ebe1;
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1120px;margin:0 auto;padding:40px 28px 96px}
+header{margin-bottom:28px}
+h1{font-size:22px;font-weight:600;margin:0 0 6px;letter-spacing:.5px}
+.sub{color:var(--ink-3);font-size:12.5px}
+.disclaimer{
+  margin-top:18px;padding:12px 16px;background:var(--surface-2);
+  border-left:3px solid var(--sand);border-radius:0 8px 8px 0;
+  color:var(--ink-2);font-size:12.5px;line-height:1.75;
+}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:24px 0 20px}
+.seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);
+  border-radius:10px;padding:3px;gap:2px}
+.seg button{
+  border:0;background:transparent;color:var(--ink-2);font:inherit;font-size:12.5px;
+  padding:6px 14px;border-radius:8px;cursor:pointer;transition:.15s;
+}
+.seg button:hover{color:var(--ink)}
+.seg button.on{background:var(--sage-soft);color:var(--sage);font-weight:600}
+nav{display:flex;gap:2px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:28px}
+nav button{
+  border:0;background:transparent;font:inherit;font-size:13px;color:var(--ink-3);
+  padding:11px 15px;cursor:pointer;border-bottom:2px solid transparent;
+  margin-bottom:-1px;transition:.15s;
+}
+nav button:hover{color:var(--ink-2)}
+nav button.on{color:var(--sage);border-bottom-color:var(--sage);font-weight:600}
+.panel{display:none;animation:fade .25s ease}
+.panel.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.grid{display:grid;gap:14px}
+.g3{grid-template-columns:repeat(auto-fill,minmax(232px,1fr))}
+.g2{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
+.card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 20px;transition:.18s;
+}
+.card.click{cursor:pointer}
+.card.click:hover{border-color:#dcd6cc;transform:translateY(-1px);
+  box-shadow:0 4px 16px rgba(51,48,43,.05)}
+.card h3{margin:0 0 2px;font-size:12.5px;font-weight:500;color:var(--ink-2);
+  letter-spacing:.3px}
+.en{font-size:10.5px;color:var(--ink-3);letter-spacing:.6px;text-transform:uppercase}
+.val{font-size:29px;font-weight:600;letter-spacing:-.5px;margin:8px 0 2px;
+  font-variant-numeric:tabular-nums}
+.val small{font-size:12px;font-weight:400;color:var(--ink-3);margin-left:5px}
+.meter{height:3px;background:var(--surface-2);border-radius:2px;overflow:hidden;margin-top:12px}
+.meter i{display:block;height:100%;background:var(--sage);border-radius:2px;
+  transition:width .5s ease}
+.meta{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);
+  margin-top:7px}
+.delta{font-size:12px;font-weight:500}
+.up{color:var(--sage)} .down{color:var(--blue)} .flat{color:var(--ink-3)}
+section{margin-bottom:34px}
+section>h2{font-size:14.5px;font-weight:600;margin:0 0 4px}
+section>.hint{color:var(--ink-3);font-size:12px;margin:0 0 14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-weight:500;color:var(--ink-3);font-size:11.5px;
+  padding:9px 12px;border-bottom:1px solid var(--line);letter-spacing:.4px}
+td{padding:11px 12px;border-bottom:1px solid var(--surface-2);vertical-align:top}
+tr.click{cursor:pointer}
+tr.click:hover td{background:var(--surface-2)}
+.tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;
+  font-weight:500;letter-spacing:.2px}
+.t-verified{background:var(--sage-soft);color:var(--sage)}
+.t-candidate{background:var(--blue-soft);color:var(--blue)}
+.t-weakened{background:var(--sand-soft);color:var(--sand)}
+.t-retired{background:var(--surface-2);color:var(--ink-3)}
+.t-observed{background:var(--sage-soft);color:var(--sage)}
+.t-inference{background:var(--blue-soft);color:var(--blue)}
+.t-suggestion{background:var(--sand-soft);color:var(--sand)}
+.conf{display:inline-flex;align-items:center;gap:7px;font-variant-numeric:tabular-nums}
+.conf i{display:block;width:44px;height:3px;background:var(--surface-2);border-radius:2px;
+  position:relative;overflow:hidden}
+.conf i b{position:absolute;left:0;top:0;bottom:0;background:var(--sage);border-radius:2px}
+.tl{position:relative;padding-left:22px}
+.tl:before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;
+  background:var(--line)}
+.tl-item{position:relative;padding:0 0 20px}
+.tl-item:before{content:"";position:absolute;left:-21px;top:7px;width:9px;height:9px;
+  border-radius:50%;background:var(--surface);border:2px solid var(--sage)}
+.tl-item.ms:before{background:var(--sage)}
+.tl-item.exp:before{border-color:var(--blue)}
+.tl-item .when{font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.tl-item .what{font-size:13px;margin-top:1px}
+.tl-item .why{font-size:12px;color:var(--ink-2);margin-top:2px}
+.ladder{display:flex;gap:3px;margin-top:10px}
+.ladder span{flex:1;height:6px;border-radius:2px;background:var(--surface-2)}
+.ladder span.done{background:var(--sage)}
+.ladder span.cur{background:var(--sage);box-shadow:0 0 0 2px var(--sage-soft)}
+.ladder span.next{background:var(--sand-soft);border:1px dashed var(--sand)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-3);
+  margin:10px 0 14px}
+.legend em{font-style:normal;display:inline-flex;align-items:center;gap:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.chart{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:20px;
+  padding:4px 12px;font-size:11.5px;color:var(--ink-3);cursor:pointer;transition:.15s}
+.chip.on{background:var(--sage-soft);border-color:var(--sage-soft);color:var(--sage);
+  font-weight:600}
+.empty{text-align:center;color:var(--ink-3);padding:48px 20px;font-size:13px}
+.empty b{display:block;color:var(--ink-2);font-weight:500;margin-bottom:6px;font-size:14px}
+.ins{border-left:2px solid var(--line);padding:2px 0 2px 16px;margin-bottom:16px}
+.ins.observed{border-color:var(--sage)}
+.ins.inference{border-color:var(--blue)}
+.ins.suggestion{border-color:var(--sand)}
+.ins p{margin:6px 0 0;font-size:13.5px}
+.ins .ev{margin-top:7px;font-size:11.5px;color:var(--ink-3)}
+.ins .ev a{color:var(--blue);text-decoration:none;cursor:pointer;margin-right:8px}
+.ins .ev a:hover{text-decoration:underline}
+.drawer{position:fixed;inset:0;background:rgba(51,48,43,.28);display:none;z-index:50;
+  backdrop-filter:blur(2px)}
+.drawer.on{display:block}
+.drawer-inner{position:absolute;right:0;top:0;bottom:0;width:min(560px,100%);
+  background:var(--surface);box-shadow:-8px 0 40px rgba(51,48,43,.12);
+  overflow-y:auto;padding:28px 30px;animation:slide .22s ease}
+@keyframes slide{from{transform:translateX(24px);opacity:.6}to{transform:none;opacity:1}}
+.drawer h3{margin:0 0 4px;font-size:16px;font-weight:600}
+.drawer .close{position:absolute;right:22px;top:20px;border:0;background:transparent;
+  font-size:20px;color:var(--ink-3);cursor:pointer;line-height:1;padding:4px}
+.drawer .close:hover{color:var(--ink)}
+.ev-row{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:9px;
+  background:var(--surface-2)}
+.ev-row .h{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);
+  margin-bottom:5px;font-variant-numeric:tabular-nums}
+.ev-row .s{font-size:13px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;font-size:12.5px;
+  margin:14px 0 20px}
+.kv dt{color:var(--ink-3)}
+.kv dd{margin:0;font-variant-numeric:tabular-nums}
+.note{font-size:12px;color:var(--ink-3);margin-top:8px;line-height:1.7}
+footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);
+  color:var(--ink-3);font-size:11.5px;line-height:1.8}
+@media(max-width:640px){.wrap{padding:24px 16px 64px}.val{font-size:25px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>VibeBridge</h1>
+    <div class="sub" id="subtitle"></div>
+    <div class="disclaimer" id="disclaimer"></div>
+  </header>
+
+  <div class="bar">
+    <div class="seg" id="windows"></div>
+    <span class="sub" id="winInfo"></span>
+  </div>
+
+  <nav id="tabs"></nav>
+
+  <div id="panels"></div>
+
+  <footer id="foot"></footer>
+</div>
+
+<div class="drawer" id="drawer">
+  <div class="drawer-inner">
+    <button class="close" onclick="closeDrawer()">&times;</button>
+    <div id="drawerBody"></div>
+  </div>
+</div>
+
+<script>
+const DATA = __VIBEBRIDGE_DATA__;
+
+/* ---------------------------------------------------------------- helpers */
+const $ = (s, r) => (r || document).querySelector(s);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g,
+  c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const d10 = s => String(s || "").slice(0, 10);
+const dmin = s => String(s || "").slice(0, 16).replace("T", " ");
+let WIN = DATA.meta.default_window || "30D";
+let TAB = "overview";
+
+function W() { return DATA.windows[WIN] || {}; }
+function pct(v) { return Math.max(0, Math.min(100, Number(v) || 0)); }
+
+function confBar(c) {
+  const v = Math.round((Number(c) || 0) * 100);
+  return '<span class="conf"><i><b style="width:' + v + '%"></b></i>' + v + "%</span>";
+}
+
+function deltaTag(d) {
+  if (d === null || d === undefined) return "";
+  const n = Number(d);
+  if (Math.abs(n) < 0.05) return '<span class="delta flat">持平</span>';
+  const cls = n > 0 ? "up" : "down";
+  return '<span class="delta ' + cls + '">' + (n > 0 ? "+" : "") + n.toFixed(1) + "</span>";
+}
+
+function empty(title, msg) {
+  return '<div class="empty"><b>' + esc(title) + "</b>" + esc(msg || "") + "</div>";
+}
+
+/* ------------------------------------------------------------ evidence UI */
+function openDrawer(html) {
+  $("#drawerBody").innerHTML = html;
+  $("#drawer").classList.add("on");
+}
+function closeDrawer() { $("#drawer").classList.remove("on"); }
+$("#drawer").addEventListener("click", e => {
+  if (e.target.id === "drawer") closeDrawer();
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
+
+function obsRows(ids) {
+  const list = (ids || []).map(i => [i, DATA.observations[i]]).filter(x => x[1]);
+  if (!list.length) return '<p class="note">这条记录的原始观察未包含在本报告的证据索引中（可能已超出保留范围）。</p>';
+  return list.map(([id, o]) =>
+    '<div class="ev-row"><div class="h"><span>' + esc(id) + " · " + esc(o.category) +
+    " · " + (o.polarity === "contradict" ? "反向证据" : "支持证据") +
+    "</span><span>" + esc(dmin(o.ts)) + "</span></div>" +
+    '<div class="s">' + esc(o.statement) + "</div>" +
+    (o.session ? '<div class="h" style="margin:6px 0 0"><span>会话 ' + esc(o.session) +
+      "</span><span>强度 " + esc(o.strength) + "</span></div>" : "") +
+    (o.excerpt ? '<div class="note">原文片段：' + esc(o.excerpt) + "</div>" : "") +
+    "</div>").join("");
+}
+
+function showEvidence(ids, title, sub) {
+  openDrawer("<h3>" + esc(title) + "</h3>" +
+    (sub ? '<div class="sub">' + esc(sub) + "</div>" : "") +
+    '<div style="margin-top:18px">' + obsRows(ids) + "</div>");
+}
+window.showEvidence = showEvidence;
+
+function showMemory(key) {
+  const m = DATA.memory.items[key];
+  if (!m) return;
+  const ids = (m.evidence || []).concat(m.contradict_evidence || []);
+  const hist = (m.history || []).slice(-12).map(h =>
+    '<div class="ev-row" style="padding:8px 12px"><div class="h"><span>' +
+    esc(h.obs || "") + " · " + esc(h.polarity || "") + "</span><span>" +
+    esc(dmin(h.ts)) + '</span></div><div class="s">置信度 ' +
+    Number(h.confidence).toFixed(3) + " · " + esc(h.status) + "</div></div>").join("");
+  openDrawer("<h3>" + esc(m.statement) + "</h3>" +
+    '<div class="sub">' + esc(m.key) + " · " + esc(m.category) + "</div>" +
+    '<dl class="kv">' +
+    "<dt>状态</dt><dd>" + esc(m.status) + "</dd>" +
+    "<dt>置信度</dt><dd>" + confBar(m.confidence) + "</dd>" +
+    "<dt>支持证据</dt><dd>" + m.evidence_count + " 条</dd>" +
+    "<dt>反向证据</dt><dd>" + (m.contradict_count || 0) + " 条</dd>" +
+    "<dt>跨会话</dt><dd>" + (m.sessions || []).length + " 个</dd>" +
+    "<dt>首次出现</dt><dd>" + esc(d10(m.first_seen)) + "</dd>" +
+    "<dt>最近出现</dt><dd>" + esc(d10(m.last_seen)) + "</dd>" +
+    (m.last_verified ? "<dt>最近验证</dt><dd>" + esc(d10(m.last_verified)) + "</dd>" : "") +
+    "</dl>" +
+    "<h3 style=\"font-size:13px\">证据链</h3>" + obsRows(ids) +
+    (hist ? "<h3 style=\"font-size:13px;margin-top:20px\">置信度变化</h3>" + hist : ""));
+}
+window.showMemory = showMemory;
+
+/* ------------------------------------------------------------- svg charts */
+function lineChart(series, buckets, opts) {
+  opts = opts || {};
+  const w = 860, h = 260, pl = 40, pr = 16, pt = 16, pb = 30;
+  const iw = w - pl - pr, ih = h - pt - pb;
+  const n = buckets.length;
+  if (!n) return empty("暂无趋势数据", "需要更长时间的记录才能画出趋势线。");
+  const colors = ["#5f8069", "#7488a3", "#b89b76", "#8a7f9b", "#6f9490", "#a68a8a",
+    "#7d9b6f", "#9b8a6f", "#6f8a9b"];
+  const x = i => pl + (n === 1 ? iw / 2 : (iw * i) / (n - 1));
+  const y = v => pt + ih - (ih * pct(v)) / 100;
+
+  let g = "";
+  for (let t = 0; t <= 100; t += 25) {
+    g += '<line x1="' + pl + '" y1="' + y(t) + '" x2="' + (w - pr) + '" y2="' + y(t) +
+      '" stroke="#eae7e1" stroke-width="1"/>' +
+      '<text x="' + (pl - 8) + '" y="' + (y(t) + 4) +
+      '" text-anchor="end" font-size="10" fill="#9b948a">' + t + "</text>";
+  }
+  const step = Math.max(1, Math.ceil(n / 8));
+  for (let i = 0; i < n; i += step) {
+    g += '<text x="' + x(i) + '" y="' + (h - 8) +
+      '" text-anchor="middle" font-size="10" fill="#9b948a">' +
+      esc(String(buckets[i]).slice(5)) + "</text>";
+  }
+  let paths = "", ci = 0;
+  series.forEach(s => {
+    const c = colors[ci++ % colors.length];
+    const pts = s.values.map((v, i) => x(i) + "," + y(v));
+    paths += '<polyline fill="none" stroke="' + c + '" stroke-width="2" ' +
+      'stroke-linejoin="round" stroke-linecap="round" points="' + pts.join(" ") + '"/>';
+    s.values.forEach((v, i) => {
+      paths += '<circle cx="' + x(i) + '" cy="' + y(v) + '" r="3.5" fill="#fff" stroke="' +
+        c + '" stroke-width="2"><title>' + esc(s.label) + " " + esc(buckets[i]) +
+        "：" + Number(v).toFixed(1) + "（" + (s.counts ? s.counts[i] : "?") +
+        " 条记录）</title></circle>";
+    });
+  });
+  return '<svg viewBox="0 0 ' + w + " " + h + '" style="width:100%;height:auto">' +
+    g + paths + "</svg>";
+}
+
+function barRow(label, value, max, sub) {
+  const pctv = max > 0 ? (value / max) * 100 : 0;
+  return '<div style="margin-bottom:12px"><div style="display:flex;' +
+    'justify-content:space-between;font-size:12.5px"><span>' + esc(label) +
+    '</span><span style="font-variant-numeric:tabular-nums;color:#6b655c">' +
+    esc(value) + (sub ? ' <span style="color:#9b948a">' + esc(sub) + "</span>" : "") +
+    '</span></div><div class="meter" style="height:6px;margin-top:5px">' +
+    '<i style="width:' + pctv + '%"></i></div></div>';
+}
+
+/* ------------------------------------------------------------------ tabs */
+const TABS = [
+  ["overview", "总览"], ["trends", "趋势"], ["behavior", "行为"],
+  ["timeline", "成长时间线"], ["projects", "项目"], ["experiments", "实验"],
+  ["map", "互动地图"], ["memory", "记忆"], ["evidence", "证据"],
+  ["insights", "洞察"], ["strategies", "支持策略"]
+];
+
+function renderOverview() {
+  const w = W();
+  const m = w.metrics || {};
+  const keys = Object.keys(m);
+  if (!keys.length) return empty("还没有数据", "正常使用即可，系统会在后台安静地积累。");
+  const cards = keys.map(k => {
+    const x = m[k];
+    return '<div class="card click" onclick="showEvidence(' +
+      JSON.stringify(JSON.stringify(x.sources || [])).replace(/"/g, "&quot;") +
+      " ? " + JSON.stringify(x.sources || []).replace(/"/g, "&quot;") + " : []," +
+      '&quot;' + esc(x.label) + '&quot;,&quot;' + esc(x.definition) + '&quot;)">' +
+      "<h3>" + esc(x.label) + '</h3><div class="en">' + esc(k.replace(/_/g, " ")) + "</div>" +
+      '<div class="val">' + Number(x.value).toFixed(0) +
+      "<small>/100</small></div>" +
+      '<div class="meter"><i style="width:' + pct(x.value) + '%"></i></div>' +
+      '<div class="meta"><span>' + x.sample_count + " 条记录</span><span>置信度 " +
+      Math.round((x.confidence || 0) * 100) + "%</span></div></div>";
+  }).join("");
+
+  const g = w.growth || {};
+  const doms = Object.entries(g.domains || {}).map(([k, v]) => {
+    const total = (DATA.meta.ladders[k] || []).length || 11;
+    let bars = "";
+    for (let i = 0; i < total; i++) {
+      const cls = i < v.level ? "done" : (i === v.level ? "cur" :
+        (i === v.level + 1 ? "next" : ""));
+      bars += '<span class="' + cls + '"></span>';
+    }
+    return '<div class="card"><h3>' + esc(v.label) + '</h3><div class="en">' +
+      esc(k.replace(/_/g, " ")) + '</div><div class="val">L' + v.level +
+      "<small>" + esc(v.level_label) + "</small></div>" +
+      '<div class="ladder">' + bars + "</div>" +
+      '<div class="meta"><span>尝试 ' + v.attempts + " · 成功 " + v.successes +
+      "</span><span>" + esc({ rising: "上升", easing: "回调", stable: "稳定" }[v.trend] ||
+        v.trend) + "</span></div></div>";
+  }).join("");
+
+  return '<section><h2>当前状态</h2><p class="hint">数值反映的是这段时间里相关行为出现的频率，' +
+    '不是能力评分，也没有及格线。点击任意卡片可以查看它是由哪些原始记录算出来的。</p>' +
+    '<div class="grid g3">' + cards + "</div></section>" +
+    '<section><h2>各维度当前位置</h2><p class="hint">各维度彼此独立。' +
+    '某个维度高、另一个维度低，是完全正常的状态，不需要被拉平。</p>' +
+    '<div class="grid g3">' + doms + "</div></section>";
+}
+
+function renderTrends() {
+  const w = W();
+  const s = w.series || { buckets: [], metrics: {} };
+  const keys = Object.keys(s.metrics || {});
+  if (!keys.length) return empty("暂无趋势", "累计更多记录后这里会出现长期变化曲线。");
+  window.__sel = window.__sel || ["engagement", "self_expression", "communication"];
+  const chips = keys.map(k =>
+    '<span class="chip' + (window.__sel.includes(k) ? " on" : "") +
+    '" onclick="toggleSeries(&quot;' + k + '&quot;)">' +
+    esc(s.metrics[k].label) + "</span>").join("");
+  const series = window.__sel.filter(k => s.metrics[k]).map(k => ({
+    label: s.metrics[k].label, values: s.metrics[k].values, counts: s.metrics[k].counts
+  }));
+  return '<section><h2>长期变化</h2><p class="hint">每个点是一周的行为频率。' +
+    '把鼠标停在点上可以看到具体记录条数。曲线下降不代表退步，通常只是关注点变了。</p>' +
+    '<div class="chips">' + chips + "</div>" +
+    '<div class="chart">' + lineChart(series, s.buckets) + "</div></section>";
+}
+window.toggleSeries = function (k) {
+  const i = window.__sel.indexOf(k);
+  if (i >= 0) { if (window.__sel.length > 1) window.__sel.splice(i, 1); }
+  else window.__sel.push(k);
+  render();
+};
+
+function renderBehavior() {
+  const b = W().behavior || {};
+  const rows = Object.entries(b);
+  if (!rows.length) return empty("暂无行为数据", "");
+  const max = Math.max(1, ...rows.map(([, v]) => Number(v.value) || 0));
+  return '<section><h2>行为计数</h2><p class="hint">这些是直接计数，没有任何加权或解读。</p>' +
+    '<div class="card">' + rows.map(([k, v]) =>
+      barRow(v.label || k, v.value, max)).join("") + "</div></section>";
+}
+
+function renderTimeline() {
+  const ev = [];
+  (DATA.milestones || []).forEach(m => ev.push({
+    ts: m.ts, cls: "ms", what: m.title, why: m.detail, ev: m.evidence
+  }));
+  (DATA.project_timeline || []).forEach(e => ev.push({
+    ts: e.ts, cls: "", what: e.project + " · " + e.type,
+    why: typeof e.detail === "object" ? JSON.stringify(e.detail) : e.detail
+  }));
+  (DATA.experiments || []).forEach(e => ev.push({
+    ts: e.created_at, cls: "exp",
+    what: "机会：" + e.objective,
+    why: e.accepted === false ? "选择不参与（不计为失败）" :
+      (e.result === "pending" ? "尚未结束" : "结果：" + e.result + " " + (e.outcome || ""))
+  }));
+  Object.values(DATA.growth.domains || {}).forEach(d => {
+    (d.history || []).forEach(h => ev.push({
+      ts: h.ts, cls: "",
+      what: d.label + " L" + h.from + " → L" + h.to + "（" + h.label + "）",
+      why: h.reason
+    }));
+  });
+  ev.sort((a, b) => String(b.ts).localeCompare(String(a.ts)));
+  if (!ev.length) return empty("时间线还是空的", "做点自己想做的东西，这里就会慢慢长出来。");
+  return '<section><h2>成长时间线</h2><p class="hint">按时间倒序。包含项目事件、里程碑、' +
+    '难度变化与实验结果。难度下调同样会记录在这里，它不是负面事件。</p><div class="tl">' +
+    ev.slice(0, 200).map(e =>
+      '<div class="tl-item ' + e.cls + '"><div class="when">' + esc(dmin(e.ts)) +
+      '</div><div class="what">' + esc(e.what) + "</div>" +
+      (e.why ? '<div class="why">' + esc(e.why) + "</div>" : "") + "</div>").join("") +
+    "</div></section>";
+}
+
+function renderProjects() {
+  const ps = DATA.projects || [];
+  if (!ps.length) return empty("还没有项目", "项目是这套系统的入口，先做你自己想做的东西。");
+  return '<section><h2>项目</h2><p class="hint">项目永远服务于你自己的目标。' +
+    '系统不会为了任何指标去改动它的方向。</p><table><thead><tr>' +
+    "<th>名称</th><th>阶段</th><th>技术栈</th><th>修改</th><th>发布</th>" +
+    "<th>反馈</th><th>协作</th><th>创建</th></tr></thead><tbody>" +
+    ps.map(p => "<tr><td><b>" + esc(p.name) + "</b>" +
+      (p.original_idea ? '<div class="note">' + esc(p.original_idea) + "</div>" : "") +
+      "</td><td>" + esc(p.stage) + "</td><td>" + esc((p.stack || []).join(", ")) +
+      "</td><td>" + (p.revisions || 0) + "</td><td>" + (p.published ? "是" : "否") +
+      "</td><td>" + (p.feedback_received || 0) + "</td><td>" + (p.collaborators || 0) +
+      "</td><td>" + esc(d10(p.created_at)) + "</td></tr>").join("") +
+    "</tbody></table></section>";
+}
+
+function renderExperiments() {
+  const es = DATA.experiments || [];
+  const fit = DATA.experiment_fit || {};
+  if (!es.length) return empty("还没有实验记录", "系统只在自然完成点提出可选机会，且从不追问。");
+  const byResult = {};
+  es.forEach(e => { byResult[e.result] = (byResult[e.result] || 0) + 1; });
+  const names = {
+    successful: "成功", partial: "部分成功", unsuccessful: "未完成",
+    not_suitable: "不适合", cancelled: "选择不参与", paused: "暂停", pending: "进行中"
+  };
+  const maxr = Math.max(1, ...Object.values(byResult));
+  const dist = Object.entries(byResult).map(([k, v]) =>
+    barRow(names[k] || k, v, maxr)).join("");
+  const fitRows = (fit.by_domain || []).map(d =>
+    "<tr><td>" + esc(DATA.meta.domain_labels[d.value] || d.value) + "</td><td>" +
+    d.samples + "</td><td>" + Math.round(d.success_rate * 100) + "%</td><td>" +
+    d.avg_stress.toFixed(2) + "</td><td>" + confBar(d.confidence) + "</td></tr>").join("");
+  return '<section><h2>结果分布</h2><p class="hint">「选择不参与」是一个正当选项，' +
+    "不计入失败，也不会降低任何数值。</p>" +
+    '<div class="card">' + dist + "</div></section>" +
+    (fitRows ? '<section><h2>哪种方式更合适</h2><p class="hint">样本量普遍很小，' +
+      '只能当作参考方向，不能当作结论。</p><table><thead><tr><th>维度</th><th>样本</th>' +
+      "<th>成功率</th><th>平均压力</th><th>置信度</th></tr></thead><tbody>" +
+      fitRows + "</tbody></table>" +
+      (fit.notes || []).map(n => '<p class="note">' + esc(n) + "</p>").join("") +
+      "</section>" : "") +
+    '<section><h2>全部记录</h2><table><thead><tr><th>目标</th><th>维度</th>' +
+    "<th>难度</th><th>结果</th><th>压力</th><th>时间</th></tr></thead><tbody>" +
+    es.slice().reverse().map(e => "<tr><td>" + esc(e.objective) + "</td><td>" +
+      esc(DATA.meta.domain_labels[e.domain] || e.domain) + "</td><td>" + e.difficulty +
+      "</td><td>" + esc(names[e.result] || e.result) + "</td><td>" +
+      Number(e.stress_estimate || 0).toFixed(2) + "</td><td>" +
+      esc(d10(e.created_at)) + "</td></tr>").join("") +
+    "</tbody></table></section>";
+}
+
+function renderMap() {
+  const g = DATA.growth || {};
+  const doms = Object.entries(g.domains || {});
+  if (!doms.length) return empty("暂无互动地图", "");
+  const cards = doms.map(([k, v]) => {
+    const lad = DATA.meta.ladders[k] || [];
+    const rows = lad.map((label, i) => {
+      let state = "", color = "#9b948a";
+      if (i < v.level) { state = "已经做到过"; color = "#5f8069"; }
+      else if (i === v.level) { state = "当前位置"; color = "#5f8069"; }
+      else if (i === v.level + 1) { state = "可能适合的下一步"; color = "#b89b76"; }
+      else { state = "暂不考虑"; }
+      return '<div style="display:flex;justify-content:space-between;padding:5px 0;' +
+        'border-bottom:1px solid #f5f3ef;font-size:12.5px">' +
+        '<span style="color:' + color + '">' + (i <= v.level + 1 ? "● " : "○ ") +
+        esc(label) + '</span><span style="color:#9b948a;font-size:11px">' +
+        esc(state) + "</span></div>";
+    }).join("");
+    return '<div class="card"><h3>' + esc(v.label) + '</h3><div class="en">' +
+      esc(k.replace(/_/g, " ")) + "</div>" +
+      '<div style="margin-top:10px">' + rows + "</div>" +
+      (v.cooldown_until ? '<p class="note">冷却至 ' + esc(dmin(v.cooldown_until)) +
+        "，期间不会提出新的尝试。</p>" : "") + "</div>";
+  }).join("");
+  const quiet = g.quiet_until ? '<div class="disclaimer">当前处于静默期，至 ' +
+    esc(dmin(g.quiet_until)) + " 之前系统不会提出任何新的机会。这是拒绝之后的正常状态，" +
+    "不是惩罚。</div>" : "";
+  return '<section><h2>互动地图</h2><p class="hint">左侧是各维度的完整阶梯。' +
+    "系统只关心「当前位置」和「可能适合的下一步」，从不要求按顺序走完全部。</p>" +
+    quiet + '<div class="grid g2">' + cards + "</div></section>";
+}
+
+function renderMemory() {
+  const items = Object.entries(DATA.memory.items || {});
+  if (!items.length) return empty("记忆还是空的", "系统只会从自然对话中慢慢积累，不会提问收集。");
+  window.__mf = window.__mf || "all";
+  const filters = [["all", "全部"], ["verified", "已验证"], ["candidate", "候选"],
+  ["weakened", "已减弱"], ["retired", "已失效"]];
+  const chips = filters.map(([k, l]) =>
+    '<span class="chip' + (window.__mf === k ? " on" : "") +
+    '" onclick="window.__mf=&quot;' + k + '&quot;;render()">' + l + "</span>").join("");
+  const rows = items
+    .filter(([, m]) => window.__mf === "all" || m.status === window.__mf)
+    .sort((a, b) => b[1].confidence - a[1].confidence)
+    .map(([k, m]) => '<tr class="click" onclick="showMemory(&quot;' + esc(k) + '&quot;)">' +
+      "<td><b>" + esc(m.statement) + '</b><div class="note">' + esc(k) + "</div></td>" +
+      "<td>" + esc(m.category) + '</td><td><span class="tag t-' + esc(m.status) + '">' +
+      esc({ verified: "已验证", candidate: "候选", weakened: "已减弱", retired: "已失效" }[m.status] ||
+        m.status) + "</span></td><td>" + confBar(m.confidence) + "</td><td>" +
+      m.evidence_count + (m.contradict_count ? " / " + m.contradict_count + " 反" : "") +
+      "</td><td>" + (m.sessions || []).length + "</td><td>" + esc(d10(m.last_seen)) +
+      "</td></tr>").join("");
+  const conf = (DATA.conflicts || []).slice(-10).reverse().map(c =>
+    '<div class="ev-row"><div class="h"><span>' + esc(c.key) + "</span><span>" +
+    esc(dmin(c.ts)) + '</span></div><div class="s">原有信念：' + esc(c.previous_belief) +
+    "</div><div class=\"s\" style=\"margin-top:5px\">新证据：" + esc(c.new_evidence) +
+    '</div><div class="note">置信度 ' + c.confidence_before + " → " + c.confidence_after +
+    "。" + esc(c.reason) + "</div></div>").join("");
+  return '<section><h2>记忆浏览器</h2><p class="hint">每一条都可以点开，' +
+    "看到它是从哪些原始观察、哪些会话中一点点积累出来的。</p>" +
+    '<div class="chips">' + chips + "</div>" +
+    "<table><thead><tr><th>内容</th><th>类别</th><th>状态</th><th>置信度</th>" +
+    "<th>证据</th><th>会话</th><th>最近</th></tr></thead><tbody>" + rows +
+    "</tbody></table></section>" +
+    (conf ? '<section><h2>信念修订记录</h2><p class="hint">出现相反证据时，' +
+      "旧的判断不会被删除或覆盖，只会重新计算置信度并留下修订记录。</p>" +
+      conf + "</section>" : "");
+}
+
+function renderEvidence() {
+  const obs = Object.entries(DATA.observations || {});
+  if (!obs.length) return empty("暂无观察记录", "");
+  const recent = obs.sort((a, b) => String(b[1].ts).localeCompare(String(a[1].ts))).slice(0, 300);
+  return '<section><h2>证据浏览器</h2><p class="hint">这是系统的底层事实层，' +
+    "共 " + obs.length + " 条。所有指标、记忆和洞察都必须能回溯到这里。</p>" +
+    "<table><thead><tr><th>ID</th><th>时间</th><th>类别</th><th>观察内容</th>" +
+    "<th>方向</th><th>会话</th></tr></thead><tbody>" +
+    recent.map(([id, o]) => "<tr><td>" + esc(id) + "</td><td>" + esc(dmin(o.ts)) +
+      "</td><td>" + esc(o.category) + "</td><td>" + esc(o.statement) + "</td><td>" +
+      (o.polarity === "contradict" ? "反向" : "支持") + "</td><td>" +
+      esc(o.session || "") + "</td></tr>").join("") + "</tbody></table></section>";
+}
+
+function renderInsights() {
+  const key = ["7D", "30D", "90D"].includes(WIN) ? WIN : "30D";
+  const ins = (DATA.insights || {})[key];
+  if (!ins) return empty("暂无分析", "");
+  const groups = [["observed", "观察到的事实", "直接来自数据，未经解读。"],
+  ["inference", "可能的解读", "这些只是可能性，不是结论，也可能是错的。"],
+  ["suggestion", "可选的下一步", "全部可以忽略，忽略不会有任何后果。"]];
+  const body = groups.map(([k, title, hint]) => {
+    const items = (ins.groups || {})[k] || [];
+    if (!items.length) return "";
+    return "<section><h2>" + title + '</h2><p class="hint">' + hint + "</p>" +
+      items.map(i => '<div class="ins ' + k + '"><span class="tag t-' + k + '">' +
+        esc(i.kind_label) + "</span>" +
+        (i.confidence != null ? " " + confBar(i.confidence) : "") +
+        "<p>" + esc(i.text) + "</p>" +
+        ((i.evidence || []).length ? '<div class="ev">证据：' +
+          i.evidence.map(e => '<a onclick="showEvidence([&quot;' + esc(e) +
+            '&quot;],&quot;' + esc(e) + '&quot;)">' + esc(e) + "</a>").join("") +
+          "</div>" : "") + "</div>").join("");
+  }).join("");
+  const low = ins.low_data ? '<div class="disclaimer">当前样本量较少（' +
+    ins.sample_size + " 条），以下内容仅供参考，不适合据此下任何结论。</div>" : "";
+  return low + body;
+}
+
+function renderStrategies() {
+  const s = DATA.strategies || {};
+  const mk = (rows, title, hint) => {
+    if (!rows || !rows.length) return "";
+    return "<section><h2>" + title + '</h2><p class="hint">' + hint + "</p><table>" +
+      "<thead><tr><th>内容</th><th>置信度</th><th>证据</th><th>最近验证</th></tr></thead><tbody>" +
+      rows.map(r => '<tr class="click" onclick="showMemory(&quot;' + esc(r.key) +
+        '&quot;)"><td>' + esc(r.statement) + "</td><td>" + confBar(r.confidence) +
+        "</td><td>" + r.evidence_count + " 条</td><td>" +
+        esc(d10(r.last_verified)) + "</td></tr>").join("") + "</tbody></table></section>";
+  };
+  const body = mk(s.preferred, "目前有效的方式",
+    "这些是从实际交互中总结出来的，不是标准建议，只适用于此刻的你。") +
+    mk(s.potentially_difficult, "目前可能吃力的方式",
+      "列出来是为了让系统主动避开它们，而不是为了让你去克服它们。");
+  if (!body) return empty("还没有足够的策略数据", "再自然使用一段时间就会出现。");
+  return body + '<div class="disclaimer">' + esc(s.disclaimer || "") + "</div>";
+}
+
+const RENDERERS = {
+  overview: renderOverview, trends: renderTrends, behavior: renderBehavior,
+  timeline: renderTimeline, projects: renderProjects, experiments: renderExperiments,
+  map: renderMap, memory: renderMemory, evidence: renderEvidence,
+  insights: renderInsights, strategies: renderStrategies
+};
+
+/* ----------------------------------------------------------------- render */
+function render() {
+  $("#windows").innerHTML = DATA.meta.windows.map(w =>
+    '<button class="' + (w === WIN ? "on" : "") + '" onclick="setWin(&quot;' + w +
+    '&quot;)">' + w + "</button>").join("");
+  $("#tabs").innerHTML = TABS.map(([k, l]) =>
+    '<button class="' + (k === TAB ? "on" : "") + '" onclick="setTab(&quot;' + k +
+    '&quot;)">' + l + "</button>").join("");
+  const w = W();
+  $("#winInfo").textContent = w.window_start
+    ? d10(w.window_start) + " 至 " + d10(w.window_end) + " · " +
+    (w.observation_count || 0) + " 条记录"
+    : "全部时间 · " + (w.observation_count || 0) + " 条记录";
+  $("#panels").innerHTML = '<div class="panel on">' +
+    (RENDERERS[TAB] ? RENDERERS[TAB]() : "") + "</div>";
+}
+window.setWin = function (w) { WIN = w; render(); };
+window.setTab = function (t) { TAB = t; render(); window.scrollTo({ top: 0, behavior: "smooth" }); };
+
+$("#subtitle").textContent = "生成于 " + dmin(DATA.meta.generated_at) +
+  " · 数据版本 " + DATA.meta.schema_version + " · 完全离线，无任何网络请求";
+$("#disclaimer").textContent = DATA.meta.disclaimer;
+$("#foot").innerHTML = "VibeBridge " + esc(DATA.meta.skill_version) +
+  " · 本文件为单文件离线报告，可直接保存或转移。<br>" +
+  "所有数据均保存在本地，未上传任何第三方服务。数值用于长期自我观察，" +
+  "不用于评价、比较或分级。";
+render();
+</script>
+</body>
+</html>
+

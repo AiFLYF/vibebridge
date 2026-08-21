@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "session_id": "sess_20260712T155733",
+  "timestamp": "2026-07-12T15:57:33Z",
+  "ended_at": "2026-07-12T15:57:33Z",
+  "project": "音乐可视化网页",
+  "summary": "正常的一次创作会话。",
+  "observations": [
+    "obs_000019",
+    "obs_000020"
+  ],
+  "candidate_memories": [],
+  "experiments": [
+    "experiment_002"
+  ],
+  "milestones": [],
+  "user_feedback": [],
+  "interaction_style": {},
+  "stress_signals": [],
+  "system_adaptation": [],
+  "status": "closed",
+  "summary_pending": false
+}

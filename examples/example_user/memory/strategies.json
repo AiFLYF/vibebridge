@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-08-21T18:57:49Z",
+  "preferred": [
+    {
+      "statement": "用户对具体、分步的问题回应更充分",
+      "key": "concrete_questions",
+      "confidence": 0.97,
+      "evidence_count": 12,
+      "last_verified": "2026-08-16T15:57:33Z",
+      "evidence": [
+        "obs_000038",
+        "obs_000039",
+        "obs_000048",
+        "obs_000049",
+        "obs_000058",
+        "obs_000059"
+      ]
+    }
+  ],
+  "potentially_difficult": [],
+  "experiment_fit": {
+    "samples": 5,
+    "by_domain": [
+      {
+        "value": "independence",
+        "samples": 1,
+        "success_rate": 1.0,
+        "avg_stress": 0.1,
+        "avg_engagement": 0.7,
+        "confidence": 0.4
+      },
+      {
+        "value": "expression",
+        "samples": 2,
+        "success_rate": 1.0,
+        "avg_stress": 0.175,
+        "avg_engagement": 0.7,
+        "confidence": 0.55
+      },
+      {
+        "value": "social",
+        "samples": 2,
+        "success_rate": 1.0,
+        "avg_stress": 0.3,
+        "avg_engagement": 0.7,
+        "confidence": 0.55
+      }
+    ],
+    "by_difficulty": [
+      {
+        "value": 2,
+        "samples": 5,
+        "success_rate": 1.0,
+        "avg_stress": 0.21,
+        "avg_engagement": 0.7,
+        "confidence": 0.95
+      }
+    ],
+    "notes": [
+      "样本内成功率最高的维度是 独立性（1 个样本）。",
+      "压力最低的方式集中在: 自我表达, 社会互动。"
+    ]
+  },
+  "disclaimer": "以上为交互偏好总结，来源于行为观察，不是对个人的评价或分类。",
+  "items": [
+    {
+      "statement": "用户对具体、分步的问题回应更充分",
+      "key": "concrete_questions",
+      "confidence": 0.97,
+      "evidence_count": 12,
+      "last_verified": "2026-08-16T15:57:33Z",
+      "evidence": [
+        "obs_000038",
+        "obs_000039",
+        "obs_000048",
+        "obs_000049",
+        "obs_000058",
+        "obs_000059"
+      ]
+    }
+  ]
+}

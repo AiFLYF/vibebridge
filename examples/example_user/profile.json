@@ -1,0 +1,154 @@
+{
+  "schema_version": "1.0.0",
+  "updated_at": "2026-08-21T18:57:49Z",
+  "note": "本画像由行为观察自动聚合生成，不是医学评估，也不构成任何诊断。",
+  "interests": [
+    {
+      "key": "audio_visual_creation",
+      "statement": "用户主动提出想做音乐可视化效果",
+      "confidence": 0.97,
+      "evidence_count": 13,
+      "contradict_count": 0,
+      "sessions": 13,
+      "status": "verified",
+      "first_seen": "2026-06-26T18:57:33Z",
+      "last_seen": "2026-08-18T12:57:33Z",
+      "last_verified": "2026-08-18T12:57:33Z",
+      "domains": [
+        "expression"
+      ],
+      "evidence": [
+        "obs_000030",
+        "obs_000031",
+        "obs_000040",
+        "obs_000041",
+        "obs_000050",
+        "obs_000051",
+        "obs_000060",
+        "obs_000061"
+      ]
+    },
+    {
+      "key": "hardware_projects",
+      "statement": "用户对硬件与传感器项目表现出持续兴趣",
+      "confidence": 0.97,
+      "evidence_count": 13,
+      "contradict_count": 0,
+      "sessions": 13,
+      "status": "verified",
+      "first_seen": "2026-06-28T15:57:33Z",
+      "last_seen": "2026-08-20T09:57:33Z",
+      "last_verified": "2026-08-20T09:57:33Z",
+      "domains": [
+        "expression"
+      ],
+      "evidence": [
+        "obs_000025",
+        "obs_000034",
+        "obs_000035",
+        "obs_000044",
+        "obs_000045",
+        "obs_000054",
+        "obs_000055",
+        "obs_000064"
+      ]
+    }
+  ],
+  "strengths": [
+    {
+      "key": "debugging_persistence",
+      "statement": "用户独立定位并修复了一个渲染问题",
+      "confidence": 0.97,
+      "evidence_count": 14,
+      "contradict_count": 0,
+      "sessions": 14,
+      "status": "verified",
+      "first_seen": "2026-06-26T18:57:33Z",
+      "last_seen": "2026-08-20T09:57:33Z",
+      "last_verified": "2026-08-20T09:57:33Z",
+      "domains": [
+        "independence"
+      ],
+      "evidence": [
+        "obs_000032",
+        "obs_000033",
+        "obs_000042",
+        "obs_000043",
+        "obs_000052",
+        "obs_000053",
+        "obs_000062",
+        "obs_000063"
+      ]
+    }
+  ],
+  "communication_preferences": [
+    {
+      "key": "concrete_questions",
+      "statement": "用户对具体、分步的问题回应更充分",
+      "confidence": 0.97,
+      "evidence_count": 12,
+      "contradict_count": 0,
+      "sessions": 12,
+      "status": "verified",
+      "first_seen": "2026-07-02T09:57:33Z",
+      "last_seen": "2026-08-16T15:57:33Z",
+      "last_verified": "2026-08-16T15:57:33Z",
+      "domains": [
+        "communication"
+      ],
+      "evidence": [
+        "obs_000028",
+        "obs_000029",
+        "obs_000038",
+        "obs_000039",
+        "obs_000048",
+        "obs_000049",
+        "obs_000058",
+        "obs_000059"
+      ]
+    }
+  ],
+  "interaction_preferences": [],
+  "support_preferences": [],
+  "behavior_patterns": [
+    {
+      "key": "iterates_until_satisfied",
+      "statement": "用户会反复调整细节直到满意",
+      "confidence": 0.9665,
+      "evidence_count": 12,
+      "contradict_count": 0,
+      "sessions": 12,
+      "status": "verified",
+      "first_seen": "2026-06-30T12:57:33Z",
+      "last_seen": "2026-08-14T18:57:33Z",
+      "last_verified": "2026-08-14T18:57:33Z",
+      "domains": [
+        "independence"
+      ],
+      "evidence": [
+        "obs_000026",
+        "obs_000027",
+        "obs_000036",
+        "obs_000037",
+        "obs_000046",
+        "obs_000047",
+        "obs_000056",
+        "obs_000057"
+      ]
+    }
+  ],
+  "engagement_patterns": [],
+  "potential_stressors": [],
+  "successful_strategies": [],
+  "unsuccessful_strategies": [],
+  "social_experiences": [],
+  "self_advocacy_patterns": [],
+  "growth_opportunities": [],
+  "counts": {
+    "verified": 5,
+    "candidate": 0,
+    "weakened": 0,
+    "retired": 0,
+    "beliefs_total": 5
+  }
+}

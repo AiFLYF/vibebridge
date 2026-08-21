@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0.0",
+  "skill_version": "1.0.0",
+  "created_at": "2026-08-21T18:57:33Z",
+  "locale": "zh-CN",
+  "privacy": {
+    "local_only": true,
+    "store_raw_excerpts": true,
+    "excerpt_max_chars": 240
+  },
+  "growth": {
+    "enabled": true,
+    "max_offers_per_session": 1,
+    "min_hours_between_offers": 20,
+    "quiet_days_after_declines": 7,
+    "decline_streak_trigger": 2
+  },
+  "confidence": {
+    "promote_confidence": 0.75,
+    "promote_evidence": 3,
+    "promote_sessions": 2,
+    "demote_confidence": 0.5,
+    "half_life_days": 120.0
+  },
+  "report": {
+    "default_window": "30D"
+  }
+}

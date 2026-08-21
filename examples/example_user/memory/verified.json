@@ -1,0 +1,712 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-08-21T18:57:48Z",
+  "items": {
+    "audio_visual_creation": {
+      "id": null,
+      "key": "audio_visual_creation",
+      "category": "interest",
+      "statement": "用户主动提出想做音乐可视化效果",
+      "domains": [
+        "expression"
+      ],
+      "support_w": 10.4,
+      "contradict_w": 0.0,
+      "evidence_count": 13,
+      "contradict_count": 0,
+      "sessions": [
+        "sess_20260626T185733",
+        "sess_20260703T185733",
+        "sess_20260705T155733",
+        "sess_20260712T155733",
+        "sess_20260714T125733",
+        "sess_20260721T125733",
+        "sess_20260723T095733",
+        "sess_20260730T095733",
+        "sess_20260731T185733",
+        "sess_20260807T185733",
+        "sess_20260809T155733",
+        "sess_20260816T155733",
+        "sess_20260818T125733"
+      ],
+      "evidence": [
+        "obs_000001",
+        "obs_000010",
+        "obs_000011",
+        "obs_000020",
+        "obs_000021",
+        "obs_000030",
+        "obs_000031",
+        "obs_000040",
+        "obs_000041",
+        "obs_000050",
+        "obs_000051",
+        "obs_000060",
+        "obs_000061"
+      ],
+      "contradict_evidence": [],
+      "first_seen": "2026-06-26T18:57:33Z",
+      "last_seen": "2026-08-18T12:57:33Z",
+      "confidence": 0.97,
+      "status": "verified",
+      "last_verified": "2026-08-18T12:57:33Z",
+      "verified_at": "2026-07-05T15:57:33Z",
+      "history": [
+        {
+          "ts": "2026-06-26T18:57:33Z",
+          "obs": "obs_000001",
+          "polarity": "support",
+          "confidence": 0.3721,
+          "status": "candidate"
+        },
+        {
+          "ts": "2026-07-03T18:57:33Z",
+          "obs": "obs_000010",
+          "polarity": "support",
+          "confidence": 0.7631,
+          "status": "candidate"
+        },
+        {
+          "ts": "2026-07-05T15:57:33Z",
+          "obs": "obs_000011",
+          "polarity": "support",
+          "confidence": 0.8847,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-12T15:57:33Z",
+          "obs": "obs_000020",
+          "polarity": "support",
+          "confidence": 0.9439,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-14T12:57:33Z",
+          "obs": "obs_000021",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-21T12:57:33Z",
+          "obs": "obs_000030",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-23T09:57:33Z",
+          "obs": "obs_000031",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-30T09:57:33Z",
+          "obs": "obs_000040",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-31T18:57:33Z",
+          "obs": "obs_000041",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-07T18:57:33Z",
+          "obs": "obs_000050",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-09T15:57:33Z",
+          "obs": "obs_000051",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-16T15:57:33Z",
+          "obs": "obs_000060",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-18T12:57:33Z",
+          "obs": "obs_000061",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        }
+      ]
+    },
+    "debugging_persistence": {
+      "id": null,
+      "key": "debugging_persistence",
+      "category": "strength",
+      "statement": "用户独立定位并修复了一个渲染问题",
+      "domains": [
+        "independence"
+      ],
+      "support_w": 9.8,
+      "contradict_w": 0.0,
+      "evidence_count": 14,
+      "contradict_count": 0,
+      "sessions": [
+        "sess_20260626T185733",
+        "sess_20260628T155733",
+        "sess_20260705T155733",
+        "sess_20260707T125733",
+        "sess_20260714T125733",
+        "sess_20260716T095733",
+        "sess_20260723T095733",
+        "sess_20260724T185733",
+        "sess_20260731T185733",
+        "sess_20260802T155733",
+        "sess_20260809T155733",
+        "sess_20260811T125733",
+        "sess_20260818T125733",
+        "sess_20260820T095733"
+      ],
+      "evidence": [
+        "obs_000002",
+        "obs_000003",
+        "obs_000012",
+        "obs_000013",
+        "obs_000022",
+        "obs_000023",
+        "obs_000032",
+        "obs_000033",
+        "obs_000042",
+        "obs_000043",
+        "obs_000052",
+        "obs_000053",
+        "obs_000062",
+        "obs_000063"
+      ],
+      "contradict_evidence": [],
+      "first_seen": "2026-06-26T18:57:33Z",
+      "last_seen": "2026-08-20T09:57:33Z",
+      "confidence": 0.97,
+      "status": "verified",
+      "last_verified": "2026-08-20T09:57:33Z",
+      "verified_at": "2026-07-05T15:57:33Z",
+      "history": [
+        {
+          "ts": "2026-06-26T18:57:33Z",
+          "obs": "obs_000002",
+          "polarity": "support",
+          "confidence": 0.3389,
+          "status": "candidate"
+        },
+        {
+          "ts": "2026-06-28T15:57:33Z",
+          "obs": "obs_000003",
+          "polarity": "support",
+          "confidence": 0.7163,
+          "status": "candidate"
+        },
+        {
+          "ts": "2026-07-05T15:57:33Z",
+          "obs": "obs_000012",
+          "polarity": "support",
+          "confidence": 0.8489,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-07T12:57:33Z",
+          "obs": "obs_000013",
+          "polarity": "support",
+          "confidence": 0.9195,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-14T12:57:33Z",
+          "obs": "obs_000022",
+          "polarity": "support",
+          "confidence": 0.9571,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-16T09:57:33Z",
+          "obs": "obs_000023",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-23T09:57:33Z",
+          "obs": "obs_000032",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-24T18:57:33Z",
+          "obs": "obs_000033",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-31T18:57:33Z",
+          "obs": "obs_000042",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-02T15:57:33Z",
+          "obs": "obs_000043",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-09T15:57:33Z",
+          "obs": "obs_000052",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-11T12:57:33Z",
+          "obs": "obs_000053",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-18T12:57:33Z",
+          "obs": "obs_000062",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-20T09:57:33Z",
+          "obs": "obs_000063",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        }
+      ]
+    },
+    "hardware_projects": {
+      "id": null,
+      "key": "hardware_projects",
+      "category": "interest",
+      "statement": "用户对硬件与传感器项目表现出持续兴趣",
+      "domains": [
+        "expression"
+      ],
+      "support_w": 9.1,
+      "contradict_w": 0.0,
+      "evidence_count": 13,
+      "contradict_count": 0,
+      "sessions": [
+        "sess_20260628T155733",
+        "sess_20260630T125733",
+        "sess_20260707T125733",
+        "sess_20260709T095733",
+        "sess_20260716T095733",
+        "sess_20260717T185733",
+        "sess_20260724T185733",
+        "sess_20260726T155733",
+        "sess_20260802T155733",
+        "sess_20260804T125733",
+        "sess_20260811T125733",
+        "sess_20260813T095733",
+        "sess_20260820T095733"
+      ],
+      "evidence": [
+        "obs_000004",
+        "obs_000005",
+        "obs_000014",
+        "obs_000015",
+        "obs_000024",
+        "obs_000025",
+        "obs_000034",
+        "obs_000035",
+        "obs_000044",
+        "obs_000045",
+        "obs_000054",
+        "obs_000055",
+        "obs_000064"
+      ],
+      "contradict_evidence": [],
+      "first_seen": "2026-06-28T15:57:33Z",
+      "last_seen": "2026-08-20T09:57:33Z",
+      "confidence": 0.97,
+      "status": "verified",
+      "last_verified": "2026-08-20T09:57:33Z",
+      "verified_at": "2026-07-07T12:57:33Z",
+      "history": [
+        {
+          "ts": "2026-06-28T15:57:33Z",
+          "obs": "obs_000004",
+          "polarity": "support",
+          "confidence": 0.3389,
+          "status": "candidate"
+        },
+        {
+          "ts": "2026-06-30T12:57:33Z",
+          "obs": "obs_000005",
+          "polarity": "support",
+          "confidence": 0.7163,
+          "status": "candidate"
+        },
+        {
+          "ts": "2026-07-07T12:57:33Z",
+          "obs": "obs_000014",
+          "polarity": "support",
+          "confidence": 0.8489,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-09T09:57:33Z",
+          "obs": "obs_000015",
+          "polarity": "support",
+          "confidence": 0.9195,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-16T09:57:33Z",
+          "obs": "obs_000024",
+          "polarity": "support",
+          "confidence": 0.9571,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-17T18:57:33Z",
+          "obs": "obs_000025",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-24T18:57:33Z",
+          "obs": "obs_000034",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-26T15:57:33Z",
+          "obs": "obs_000035",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-02T15:57:33Z",
+          "obs": "obs_000044",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-04T12:57:33Z",
+          "obs": "obs_000045",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-11T12:57:33Z",
+          "obs": "obs_000054",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-13T09:57:33Z",
+          "obs": "obs_000055",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-20T09:57:33Z",
+          "obs": "obs_000064",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        }
+      ]
+    },
+    "iterates_until_satisfied": {
+      "id": null,
+      "key": "iterates_until_satisfied",
+      "category": "behavior_pattern",
+      "statement": "用户会反复调整细节直到满意",
+      "domains": [
+        "independence"
+      ],
+      "support_w": 7.2,
+      "contradict_w": 0.0,
+      "evidence_count": 12,
+      "contradict_count": 0,
+      "sessions": [
+        "sess_20260630T125733",
+        "sess_20260702T095733",
+        "sess_20260709T095733",
+        "sess_20260710T185733",
+        "sess_20260717T185733",
+        "sess_20260719T155733",
+        "sess_20260726T155733",
+        "sess_20260728T125733",
+        "sess_20260804T125733",
+        "sess_20260806T095733",
+        "sess_20260813T095733",
+        "sess_20260814T185733"
+      ],
+      "evidence": [
+        "obs_000006",
+        "obs_000007",
+        "obs_000016",
+        "obs_000017",
+        "obs_000026",
+        "obs_000027",
+        "obs_000036",
+        "obs_000037",
+        "obs_000046",
+        "obs_000047",
+        "obs_000056",
+        "obs_000057"
+      ],
+      "contradict_evidence": [],
+      "first_seen": "2026-06-30T12:57:33Z",
+      "last_seen": "2026-08-14T18:57:33Z",
+      "confidence": 0.9665,
+      "status": "verified",
+      "last_verified": "2026-08-14T18:57:33Z",
+      "verified_at": "2026-07-09T09:57:33Z",
+      "history": [
+        {
+          "ts": "2026-06-30T12:57:33Z",
+          "obs": "obs_000006",
+          "polarity": "support",
+          "confidence": 0.3025,
+          "status": "candidate"
+        },
+        {
+          "ts": "2026-07-02T09:57:33Z",
+          "obs": "obs_000007",
+          "polarity": "support",
+          "confidence": 0.6604,
+          "status": "candidate"
+        },
+        {
+          "ts": "2026-07-09T09:57:33Z",
+          "obs": "obs_000016",
+          "polarity": "support",
+          "confidence": 0.8021,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-10T18:57:33Z",
+          "obs": "obs_000017",
+          "polarity": "support",
+          "confidence": 0.8847,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-17T18:57:33Z",
+          "obs": "obs_000026",
+          "polarity": "support",
+          "confidence": 0.9328,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-19T15:57:33Z",
+          "obs": "obs_000027",
+          "polarity": "support",
+          "confidence": 0.9608,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-26T15:57:33Z",
+          "obs": "obs_000036",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-28T12:57:33Z",
+          "obs": "obs_000037",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-04T12:57:33Z",
+          "obs": "obs_000046",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-06T09:57:33Z",
+          "obs": "obs_000047",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-13T09:57:33Z",
+          "obs": "obs_000056",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-14T18:57:33Z",
+          "obs": "obs_000057",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        }
+      ]
+    },
+    "concrete_questions": {
+      "id": null,
+      "key": "concrete_questions",
+      "category": "communication_preference",
+      "statement": "用户对具体、分步的问题回应更充分",
+      "domains": [
+        "communication"
+      ],
+      "support_w": 7.2,
+      "contradict_w": 0.0,
+      "evidence_count": 12,
+      "contradict_count": 0,
+      "sessions": [
+        "sess_20260702T095733",
+        "sess_20260703T185733",
+        "sess_20260710T185733",
+        "sess_20260712T155733",
+        "sess_20260719T155733",
+        "sess_20260721T125733",
+        "sess_20260728T125733",
+        "sess_20260730T095733",
+        "sess_20260806T095733",
+        "sess_20260807T185733",
+        "sess_20260814T185733",
+        "sess_20260816T155733"
+      ],
+      "evidence": [
+        "obs_000008",
+        "obs_000009",
+        "obs_000018",
+        "obs_000019",
+        "obs_000028",
+        "obs_000029",
+        "obs_000038",
+        "obs_000039",
+        "obs_000048",
+        "obs_000049",
+        "obs_000058",
+        "obs_000059"
+      ],
+      "contradict_evidence": [],
+      "first_seen": "2026-07-02T09:57:33Z",
+      "last_seen": "2026-08-16T15:57:33Z",
+      "confidence": 0.97,
+      "status": "verified",
+      "last_verified": "2026-08-16T15:57:33Z",
+      "verified_at": "2026-07-10T18:57:33Z",
+      "history": [
+        {
+          "ts": "2026-07-02T09:57:33Z",
+          "obs": "obs_000008",
+          "polarity": "support",
+          "confidence": 0.3025,
+          "status": "candidate"
+        },
+        {
+          "ts": "2026-07-03T18:57:33Z",
+          "obs": "obs_000009",
+          "polarity": "support",
+          "confidence": 0.6604,
+          "status": "candidate"
+        },
+        {
+          "ts": "2026-07-10T18:57:33Z",
+          "obs": "obs_000018",
+          "polarity": "support",
+          "confidence": 0.8021,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-12T15:57:33Z",
+          "obs": "obs_000019",
+          "polarity": "support",
+          "confidence": 0.8847,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-19T15:57:33Z",
+          "obs": "obs_000028",
+          "polarity": "support",
+          "confidence": 0.9328,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-21T12:57:33Z",
+          "obs": "obs_000029",
+          "polarity": "support",
+          "confidence": 0.9608,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-28T12:57:33Z",
+          "obs": "obs_000038",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-07-30T09:57:33Z",
+          "obs": "obs_000039",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-06T09:57:33Z",
+          "obs": "obs_000048",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-07T18:57:33Z",
+          "obs": "obs_000049",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-14T18:57:33Z",
+          "obs": "obs_000058",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        },
+        {
+          "ts": "2026-08-16T15:57:33Z",
+          "obs": "obs_000059",
+          "polarity": "support",
+          "confidence": 0.97,
+          "status": "verified"
+        }
+      ]
+    }
+  }
+}

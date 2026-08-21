@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0.0",
+  "updated_at": "2026-08-07T18:57:33Z",
+  "domains": {
+    "expression": {
+      "level": 1,
+      "stability": 0.25,
+      "attempts": 2,
+      "successes": 2,
+      "last_change": "2026-07-12T15:57:33Z",
+      "last_change_reason": "连续成功且稳定度达标",
+      "cooldown_until": "2026-07-14T15:57:33Z",
+      "history": [
+        {
+          "ts": "2026-07-12T15:57:33Z",
+          "from": 0,
+          "to": 1,
+          "reason": "连续成功且稳定度达标",
+          "label": "描述需求"
+        }
+      ]
+    },
+    "communication": {
+      "level": 0,
+      "stability": 0.0,
+      "attempts": 0,
+      "successes": 0,
+      "last_change": null,
+      "last_change_reason": "init",
+      "cooldown_until": null,
+      "history": []
+    },
+    "social": {
+      "level": 0,
+      "stability": 0.47,
+      "attempts": 2,
+      "successes": 1,
+      "last_change": null,
+      "last_change_reason": "init",
+      "cooldown_until": null,
+      "history": []
+    },
+    "collaboration": {
+      "level": 0,
+      "stability": 0.0,
+      "attempts": 0,
+      "successes": 0,
+      "last_change": null,
+      "last_change_reason": "init",
+      "cooldown_until": null,
+      "history": []
+    },
+    "independence": {
+      "level": 0,
+      "stability": 0.35,
+      "attempts": 1,
+      "successes": 1,
+      "last_change": null,
+      "last_change_reason": "init",
+      "cooldown_until": null,
+      "history": []
+    },
+    "self_advocacy": {
+      "level": 0,
+      "stability": 0.0,
+      "attempts": 0,
+      "successes": 0,
+      "last_change": null,
+      "last_change_reason": "init",
+      "cooldown_until": null,
+      "history": []
+    }
+  },
+  "decline_streak": 0,
+  "quiet_until": null,
+  "last_offer_at": "2026-08-07T18:57:33Z",
+  "offers_this_session": {},
+  "paused": false
+}

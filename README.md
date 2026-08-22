@@ -57,10 +57,12 @@ Copy-Item -Recurse vibebridge "$HOME\.claude\skills\vibebridge"
 然后在对话中：
 
 ```
-/init
+/vb-init
 ```
 
 初始化只创建目录和配置文件，**不会问你任何问题**。
+
+可选：装上斜杠命令（`/vb-report`、`/vb-profile` 等），见 [`install/README.md`](install/README.md)。不装也能用，正常聊天时 skill 会自动生效。
 
 验证安装：
 
@@ -99,13 +101,13 @@ python ~/.claude/skills/vibebridge/core/vb.py doctor
 
 | 命令 | 作用 |
 |---|---|
-| `/report` | 生成交互式 HTML 报告 |
-| `/dashboard` | 生成并打开 |
-| `/profile` | 当前自动形成的画像 |
-| `/memory` | 长期记忆及其证据 |
-| `/grow` | 当前最自然的下一步（可能是"现在什么都不适合"） |
-| `/reflect` | 低压力复盘，不需要回答任何东西 |
-| `/reset` | 降低当前难度 |
+| `/vb-report` | 生成交互式 HTML 报告 |
+| `/vb-dashboard` | 生成并打开 |
+| `/vb-profile` | 当前自动形成的画像 |
+| `/vb-memory` | 长期记忆及其证据 |
+| `/vb-grow` | 当前最自然的下一步（可能是"现在什么都不适合"） |
+| `/vb-reflect` | 低压力复盘，不需要回答任何东西 |
+| `/vb-reset` | 降低当前难度 |
 
 ## 报告
 

@@ -150,19 +150,23 @@ python core/vb.py profile --strategies
 
 ## 用户显式命令
 
+Claude Code 的 `/init` 和 `/memory` 是内置命令，会被占用。所以 VibeBridge 的命令统一带 `vb-` 前缀，装在 `~/.claude/commands/`：
+
 | 命令 | 行为 |
 |---|---|
-| `/init` | `vb init`。只建基础设施，**一个问题都不许问**。 |
-| `/memory` | `vb memory list` / `vb memory show --key <k>` |
-| `/profile` | `vb profile` |
-| `/session` | `vb session list` |
-| `/project` | `vb project list` |
-| `/grow` | `vb grow opportunities`，如实转述 gate 状态 |
-| `/experiment` | `vb experiment list` |
-| `/reflect` | `vb reflect --window 7D`，低压力复述，不追问 |
-| `/report` | `vb report --window 30D` |
-| `/dashboard` | `vb report --open` |
-| `/reset` | `vb reset difficulty`（降难度）。只有用户明说要清空时才用 `growth` 或 `all` |
+| `/vb-init` | `vb init`。只建基础设施，**一个问题都不许问**。 |
+| `/vb-memory` | `vb memory list` / `vb memory show --key <k>` / `vb memory conflicts` |
+| `/vb-profile` | `vb profile --rebuild` + `--strategies` |
+| `/vb-grow` | `vb grow state` + `opportunities`，如实转述 gate 状态 |
+| `/vb-reflect` | `vb reflect --window 7D`，低压力复述，不追问 |
+| `/vb-report` | `vb report --window 30D` |
+| `/vb-dashboard` | `vb report --open` |
+| `/vb-reset` | `vb reset difficulty`（降难度）。只有用户明说要清空时才用 `growth` 或 `all` |
+| `/vb-doctor` | `vb doctor` 数据完整性与安全自检 |
+
+`/vibebridge` 直接调用本 Skill 本身。用户也可以完全不用命令——正常聊天时本 Skill 会自动生效。
+
+会话与项目没有对应的斜杠命令，因为它们**应该在后台自动发生**，不需要用户操心。
 
 呈现数据时：说明数字来自行为频率而非能力评分，指出样本量小的地方，不要庆祝也不要担忧。
 

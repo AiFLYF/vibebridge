@@ -55,6 +55,10 @@ __pycache__/
 venv/
 env/
 
+# Local assistant workspace (review notes, session memory).
+# Not project source, and not meant to be published.
+.workbuddy-ai/
+
 # Editors and OS
 .vscode/
 .idea/

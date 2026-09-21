@@ -44,7 +44,7 @@ LLM 决策层        判断何时观察、如何措辞、什么是自然机会
 需要 Python 3.9+，零第三方依赖。
 
 ```bash
-git clone https://github.com/<you>/vibebridge.git
+git clone https://github.com/AiFLYF/vibebridge.git
 cp -r vibebridge ~/.claude/skills/vibebridge
 ```
 

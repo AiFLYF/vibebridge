@@ -173,6 +173,7 @@ const heroInner = document.querySelector('.hero-inner');
    章节参数
    rx/ry/rz 粒子群旋转 · z 相机距离 · noise 噪声振幅 · mouseF 鼠标排斥
    op 不透明度 · ps 点尺寸倍率（默认 1）· acc 强调色（写入 CSS 变量 --acc，全站自动跟随）
+   warm 走强调色的粒子占比（0–1）—— 形态的「颜色身份」全靠它
    ox / oy 整体偏移 —— 把形态推到「版面保证为空」的位置
    m  窄屏覆盖（**必须显式给 ox/oy/ps**，否则继承桌面的值会飞出画外或糊成一片）
    ══════════════════════════════════════════════════════════════
@@ -194,24 +195,25 @@ const heroInner = document.querySelector('.hero-inner');
    世界原点，而正文也在中间 —— 浅底深粒子叠黑字，就是糊。
    ══════════════════════════════════════════════════════════════ */
 const CHAPTERS = [
-  // 00 桥 —— 琥珀灯色（桥上的灯）。加色混合下密集处会过曝，op 从 0.92 压到 0.5
+  // 00 桥 —— 琥珀灯色（桥上的灯）。warm 0.90：整座桥几乎全走强调色，
+  // 读出来是「夜里的一串灯」而不是「一坨白星尘」。
   /* 窄屏：横向的桥在竖屏里放不下，但旋转 -90° 会让桥塔变成两道横杠，
      必然横穿 facts 行（量到 13/255）。改成「不旋转 + 抬高视距 + 整体下移」，
      只露中央一跨（双塔 + 主缆 + 桥面）压在视口底部当一条地平线 ——
      内容一行都不碰，桥也照样认得出。两岸在竖屏下出画，是取舍。 */
-  { rx: 0.16, ry: 0.0, rz: 0.0, z: 5.0, noise: 0.05, mouseF: 0.95, op: 0.55, acc: '#E8B44A',
-    m: { rx: 0.16, ry: 0.0, rz: 0.0, z: 8.5, ox: 0, oy: -1.62, op: 0.5 } },
+  { rx: 0.16, ry: 0.0, rz: 0.0, z: 5.0, noise: 0.05, mouseF: 0.95, op: 0.88, acc: '#E8B44A', warm: 0.90,
+    m: { rx: 0.16, ry: 0.0, rz: 0.0, z: 8.5, ox: 0, oy: -1.62, op: 0.72 } },
   // 01 中空球壳 —— 只围住不填满。月光银蓝，克制
   /* ps 0.62：默认点尺寸下，72000 个粒子挤在 111px 半径里，壳的前后两层投影重叠，
      整个球糊成一颗实心黑球，"中空"完全读不出来。点收小到 62% 后壳的结构才露出来。 */
-  { rx: 0.30, ry: -0.5, rz: 0.0, z: 7.4, noise: 0.03, mouseF: 0.8, op: 0.30, acc: '#A8BCCB',
+  { rx: 0.30, ry: -0.5, rz: 0.0, z: 7.4, noise: 0.03, mouseF: 0.8, op: 0.66, acc: '#A8BCCB', warm: 0.30,
     ox: 3.35, oy: 1.20, ps: 0.62,
-    m: { z: 9.6, ox: 0.70, oy: 3.05, op: 0.16, ps: 0.62 } },
+    m: { z: 9.6, ox: 0.70, oy: 3.05, op: 0.30, ps: 0.62 } },
   // 02 只追加的螺旋 —— 立起来：竖向线轴落在右上，冰蓝
   /* ps 0.62 同 01：默认点尺寸下螺旋的圈层糊成一坨，读不出"一圈圈往上长"。 */
-  { rx: 0.10, ry: -0.42, rz: 0.0, z: 6.8, noise: 0.07, mouseF: 0.75, op: 0.32, acc: '#6FA8FF',
+  { rx: 0.10, ry: -0.42, rz: 0.0, z: 6.8, noise: 0.07, mouseF: 0.75, op: 0.66, acc: '#6FA8FF', warm: 0.48,
     ox: 4.29, oy: 0.82, ps: 0.62,
-    m: { rx: 0.0, ry: -0.62, z: 9.6, ox: 0.95, oy: 3.05, op: 0.17, ps: 0.62 } },
+    m: { rx: 0.0, ry: -0.62, z: 9.6, ox: 0.95, oy: 3.05, op: 0.32, ps: 0.62 } },
   // 03 六根柱 —— 薄荷绿（柱子落在右侧 42%，见 formColumns）
   /* 柱体本来是模糊的黑色方块，跟左边清晰的绿色阶梯条并排显得脏。
      fuzz 来自 noise + 过大的点尺寸：ps 0.62 + noise 0.022 后柱面变细，
@@ -220,25 +222,25 @@ const CHAPTERS = [
      而且 formColumns 的横坐标是按桌面视距 halfWidthAt(5.3) 算的，
      竖屏 z 变大后落点会漂到画面中央、正好压住 lede。
      和别章一样放到视口顶部那条带（内容之上），并抬高视距把柱体缩到 ~125px。 */
-  { rx: 0.10, ry: -0.24, rz: 0.0, z: 5.3, noise: 0.022, mouseF: 0.7, op: 0.34, acc: '#4ED8A0', ps: 0.62,
-    m: { rx: 0.0, ry: 0.0, z: 20.0, ox: 1.20, oy: 7.70, op: 0.26, ps: 0.62 } },
+  { rx: 0.10, ry: -0.24, rz: 0.0, z: 5.3, noise: 0.022, mouseF: 0.7, op: 0.70, acc: '#4ED8A0', ps: 0.62, warm: 0.58,
+    m: { rx: 0.0, ry: 0.0, z: 20.0, ox: 1.20, oy: 7.70, op: 0.40, ps: 0.62 } },
   // 04 收敛核心 —— 暖金（核心密度极高，op 比其它徽记再压一档才不显突兀）
   /* 竖屏：z 8.6 时核心半径 76px、中心落在 x284，正好压住小节标签尾部的「置信度」
      （30.4/255）。抬高视距缩到 ~50px 并右移到标签之外。 */
-  { rx: 0.20, ry: 0.34, rz: 0.0, z: 6.2, noise: 0.05, mouseF: 0.85, op: 0.26, acc: '#E8B44A',
+  { rx: 0.20, ry: 0.34, rz: 0.0, z: 6.2, noise: 0.05, mouseF: 0.85, op: 0.64, acc: '#E8B44A', warm: 0.78,
     ox: 3.08, oy: 1.04, ps: 0.62,
-    m: { z: 13.0, ox: 2.10, oy: 4.20, op: 0.20, ps: 0.62 } },
+    m: { z: 13.0, ox: 2.10, oy: 4.20, op: 0.34, ps: 0.62 } },
   // 05 晶格 —— 暖骨白。线结构本来就比实心形态"轻"，op 给到 0.45 才不显灰淡
-  { rx: 0.30, ry: -0.36, rz: 0.0, z: 7.2, noise: 0.035, mouseF: 0.6, op: 0.44, acc: '#BDB6A6',
-    ox: 2.99, oy: 1.21,
-    m: { z: 9.8, ox: 0.60, oy: 3.10, op: 0.20 } },
+  { rx: 0.30, ry: -0.36, rz: 0.0, z: 7.2, noise: 0.035, mouseF: 0.6, op: 0.74, acc: '#BDB6A6', warm: 0.34,
+    ox: 2.99, oy: 1.21, ps: 0.62,
+    m: { z: 9.8, ox: 0.60, oy: 3.10, op: 0.38, ps: 0.62 } },
   // 06 文字 —— 星白（词标宽度按视口算，见 textWorldW）
   /* 窄屏 oy 上移到 nav 之下、06 标签之上那条带（y≈103–183px）。
      窄屏还要 ps=0.55 收小点尺寸：词标在 390px 上只有 347px 宽，
      笔画的屏幕宽度约 8.7px，而默认点尺寸 2–7px + 0.65px 采样间距
      会把笔画糊成实心黑 —— 点小一半，字形才出得来。 */
-  { rx: 0.0, ry: 0.0, rz: 0.0, z: 6.4, noise: 0.028, mouseF: 0.6, op: 0.50, acc: '#F2EAD8',
-    oy: 1.35, ps: 0.85, m: { oy: 1.97, ps: 0.5 } },
+  { rx: 0.0, ry: 0.0, rz: 0.0, z: 6.4, noise: 0.012, mouseF: 0.6, op: 1.0, acc: '#F2EAD8', warm: 0.75,
+    oy: 1.15, ps: 1.25, m: { oy: 1.97, op: 0.72, ps: 0.72 } },
 ];
 
 const isNarrow = () => innerWidth < 760 && innerHeight > innerWidth;
@@ -322,6 +324,19 @@ function formBridge(count) {
       const x = hangerX[(Math.random() * hangerX.length) | 0];
       const cy = cableY(x);
       return [x + (Math.random() * 2 - 1) * 0.012, cy + (DECK_Y - cy) * Math.random(), (Math.random() * 2 - 1) * 0.012];
+    } },
+    /* 塔顶的灯 —— 整座桥唯一的人造光源，也是「夜里看桥上的灯」这个
+       隐喻本身。权重很小（0.016）但半径只有 0.045：一千多个粒子挤在
+       17px 的圆里，加色叠加必然过曝，再叠上屏幕空间 bloom 就是一颗
+       真正在发光的灯。没有它，整座桥只是一团均匀的星尘。 */
+    { w: 0.016, f: () => {
+      const sx = Math.random() < 0.5 ? -1 : 1;
+      const r = 0.045 * Math.cbrt(Math.random());
+      const a = Math.random() * Math.PI * 2;
+      const b = Math.acos(2 * Math.random() - 1);
+      return [sx * TOW_X + r * Math.sin(b) * Math.cos(a),
+              TOW_TOP + r * Math.sin(b) * Math.sin(a) * 0.80,
+              r * Math.cos(b) * 0.70];
     } },
     // 左岸 —— 一个人内部的光。pow(rand,1.5) 让密度向中心聚，边缘自然散掉，
     // 读起来是墨晕而不是墨块。25% 的粒子放宽一点当外晕。
@@ -533,20 +548,24 @@ function formLattice(count, HW = 1.55, HH = 0.80, HD = 0.26) {
   return out;
 }
 
-/* 06 — 文字粒子 ------------------------------------------------ */
+/* 06 — 文字粒子 ------------------------------------------------
+   抖动是「清不清晰」的另一个总开关：0.026 世界单位在 1600 宽下约 4px，
+   笔画本身才 20–30px 宽，一颗颗点撒开之后整行字就糊成一团灰。
+   收到 0.011（≈1.7px）之后笔画是实的，字才立得住。
+   进深 0.34 → 0.14 同理：太厚会让前后两层在屏幕上错开成一圈毛边。 */
 function formText(count, str, worldW) {
   const out = new Float32Array(count * 3);
-  const pts = sampleText(str, worldW);
+  const pts = sampleText(str, worldW, count);
   for (let i = 0; i < count; i++) {
     const p = pts[i % pts.length];
-    out[i * 3] = p[0] + (Math.random() - 0.5) * 0.026;
-    out[i * 3 + 1] = p[1] + (Math.random() - 0.5) * 0.026;
-    out[i * 3 + 2] = (Math.random() - 0.5) * 0.34;
+    out[i * 3] = p[0] + (Math.random() - 0.5) * 0.011;
+    out[i * 3 + 1] = p[1] + (Math.random() - 0.5) * 0.011;
+    out[i * 3 + 2] = (Math.random() - 0.5) * 0.14;
   }
   return out;
 }
 
-function sampleText(str, worldW) {
+function sampleText(str, worldW, count) {
   const cw = 1600, ch = 460;
   const cv = document.createElement('canvas');
   cv.width = cw; cv.height = ch;
@@ -566,12 +585,23 @@ function sampleText(str, worldW) {
   const img = cx.getImageData(0, 0, cw, ch).data;
   const pts = [];
   const worldH = worldW * (ch / cw);
-  for (let py = 0; py < ch; py += 3) {
-    for (let px = 0; px < cw; px += 3) {
+  // 采样步长跟着粒子数走：粒子比采样点还多时，步长就该细一点，
+  // 否则每个采样点被复用 3–4 次，笔画里会看出规则的网点。
+  const step = (count || 0) >= 50000 ? 2 : 3;
+  for (let py = 0; py < ch; py += step) {
+    for (let px = 0; px < cw; px += step) {
       if (img[(py * cw + px) * 4 + 3] > 128) {
         pts.push([(px / cw - 0.5) * worldW, -(py / ch - 0.5) * worldH]);
       }
     }
+  }
+  /* 洗牌：formText 用 pts[i % pts.length] 取点，采样点是按扫描线顺序生成的。
+     一旦 pts.length > count（细步长 + 低端设备的 30000 粒），
+     取模就只会用到前 count 个 —— 字只有左半边有粒子，右边是空的。
+     洗过之后任何前缀都是均匀子集，粒数怎么变都不会半张字。 */
+  for (let i = pts.length - 1; i > 0; i--) {
+    const j = (Math.random() * (i + 1)) | 0;
+    const t = pts[i]; pts[i] = pts[j]; pts[j] = t;
   }
   return pts.length ? pts : [[0, 0]];
 }
@@ -593,6 +623,8 @@ uniform float uNoise;
 uniform vec3  uMouse;
 uniform float uMouseF;
 uniform float uSize;
+uniform float uWarm;
+uniform float uBurst;
 varying float vMix;
 varying float vFade;
 varying float vTw;
@@ -658,6 +690,14 @@ void main(){
   pos = mix(pos, aT5, s5);
   pos = mix(pos, aT6, s6);
 
+  /* 重组脉冲（末章 HUD 的「重组」按钮）：
+     从原点沿各自方向炸开再收回 —— 直接证明这是实时算出来的，
+     不是一张图。uBurst 由 JS 衰减，reduced-motion 下恒为 0。 */
+  if (uBurst > 0.001) {
+    vec3 dir = normalize(pos + vec3(0.0001, 0.0002, 0.0003));
+    pos += dir * uBurst * (0.28 + aRand.x * 1.15);
+  }
+
   // 变形中的湍流：噪声 ×9，粒子先炸开再收拢 —— 高级感的关键
   float trans = s1*(1.0-s1) + s2*(1.0-s2) + s3*(1.0-s3)
               + s4*(1.0-s4) + s5*(1.0-s5) + s6*(1.0-s6);
@@ -689,13 +729,25 @@ void main(){
   gl_Position = projectionMatrix * mv;
 
   float dist = max(0.1, -mv.z);
-  // sprite 放大 1.6 倍给晕留出面积；FRAG 里核乘回 1.6，屏幕上的核径不变。
-  // 填充率 ×2.56 —— perf.js 掉到 50fps 以下就把这个系数降到 1.3。
-  gl_PointSize = uSize * (0.55 + aRand.x * 1.15) * (4.6 / dist) * 1.6;
+  /* sprite 放大倍率 1.6 → 1.15。
+     光晕不再由 sprite 自己画（那层铺满 sprite 的半透明边，
+     72000 个点叠起来就是一片灰膜），改由屏幕空间 bloom 负责。
+     sprite 只需要刚好容纳"核 + 一圈薄边"，填充率降 48%，
+     同样的不透明度下读起来反而更锐、更亮。 */
+  gl_PointSize = uSize * (0.55 + aRand.x * 1.15) * (4.6 / dist) * 1.15;
 
-  vMix = smoothstep(0.80, 0.97, aRand.w);
-  vFade = smoothstep(13.0, 3.0, dist);
-  vTw = 0.45 + 0.55 * sin(uTime * 2.0 + aRand.y * 43.0);
+  // 强调色粒子的占比由章节的 warm 决定：桥要"桥上的灯"（暖琥珀为主），
+  // 其余形态是冷星尘 + 少量灯色。原来写死 20%，导致把星尘提亮之后
+  // 强调色被冲淡，整页变成一片白噪点 —— 品牌色反而没了。
+  vMix = smoothstep(1.0 - uWarm, 1.0 - uWarm + 0.08, aRand.w);
+  // 远处淡出。原值 (13,3) 在末章词标上太狠了：词标横跨 ±4.6 世界单位，
+  // 最外圈的字母 dist 已经到 7.9，只剩 51% 亮度 —— 一行字左右两头
+  // 明显比中间暗，读起来像"没渲染完"。放宽到 (17,4.5) 之后，
+  // 词标整行亮度接近，而更远的浮尘照样会淡掉。
+  vFade = smoothstep(17.0, 4.5, dist);
+  // 闪烁幅度收窄到 0.66–1.0：原来 0.45–1.0 的抖动幅度太大，
+  // 密集处看起来"没渲染完"，静态截图尤其明显。呼吸感留着，噪声去掉。
+  vTw = 0.66 + 0.34 * sin(uTime * 2.0 + aRand.y * 43.0);
 }
 `;
 
@@ -709,27 +761,233 @@ varying float vTw;
 varying float vTrans;
 
 void main(){
-  // 暗底加色发光：亮核 + 宽晕两项衰减，在 point sprite 内假 bloom。
-  // sprite 被放大 1.6 倍（见 VERT 的 gl_PointSize），所以核要乘回 1.6
-  // 才和旧 disc 同尺寸；晕铺满整个 sprite，稀疏处读作星尘。
+  // 暗底加色发光：sprite 给出锐利的核，屏幕空间 bloom（见 renderPost）给出光晕。
+  // 两者分工后，同一份不透明度下读起来是「一颗颗灯」而不是「一层灰雾」。
+  //
   // 密集处（桥面、词标笔画）加色叠加会削顶死白 —— 软膝 1-exp() 压住。
   float d = length(gl_PointCoord - 0.5) * 2.0;
   if (d > 1.0) discard;
-  float core = pow(max(0.0, 1.0 - d * 1.6), 3.0);
-  float halo = pow(max(0.0, 1.0 - d), 1.6) * 0.30;
+  /* 分工重新划清：sprite 只负责「锐利的核」，光晕交给屏幕空间 bloom。
+     旧版 halo 铺满整个 sprite（0.24 强度 × 13px 直径），
+     72000 个点叠加后就是一层半透明灰膜 —— 稀疏处是脏噪点，
+     密集处糊成一坨，这正是「看着不清晰」的根因。
+     现在 halo 压到 0.10 且衰减指数提到 3.2，只在核周围留一圈薄边。 */
+  float core = pow(max(0.0, 1.0 - d * 1.85), 4.5);
+  float halo = pow(max(0.0, 1.0 - d), 3.2) * 0.10;
   vec3 base = mix(uColA, uColB, vMix);
-  vec3 col = base + vec3(1.0) * pow(core, 3.0) * 0.55;   // 核芯趋白热
-  float a = (core + halo) * vFade * vTw * uOpacity * (1.0 - vTrans * 0.68);
-  a = 1.0 - exp(-a * 1.6);
+  vec3 col = base + vec3(1.0) * pow(core, 1.4) * 1.15;   // 核芯趋白热
+  float a = (core * 1.70 + halo) * vFade * vTw * uOpacity * (1.0 - vTrans * 0.68);
+  a = 1.0 - exp(-a * 1.7);
   gl_FragColor = vec4(col * a, a);
 }
 `;
 
 /* ══════════════════════════════════════════════════════════════
+   后处理：自实现 Bloom（不依赖 addons）
+   --------------------------------------------------------------
+   为什么必须自己写：postprocessing addon 全是 ESM，在 file:// 下被 CORS 拦，
+   而这个页面要能 file:// 直开。整条管线只有三个 shader，换来的是
+   「粒子从噪点变成发光体」—— 这是整页质感的分水岭。
+
+     scene ─render─▶ rtScene ─bright─▶ rtA ─blurH─▶ rtB ─blurV─▶ rtA
+                                                                   │
+                                            rtA(1/2 近场光晕) ──────┤
+                                                                   │
+                              rtA ─blurH(×2)─▶ rtC ─blurV(×2)─▶ rtD
+                                                                   │
+                                            rtD(1/4 远场光晕) ──────┤
+                                                                   ▼
+                          composite(rtScene + b1 + b2) ─────▶ 默认 framebuffer
+
+   两条硬约束：
+   · rtScene 必须保留 alpha —— canvas 叠在页面背景上，合成阶段输出预乘 alpha，
+     粒子以外的区域要让 body 背景透出来，否则整屏会被一块黑布盖住。
+   · bloom 是低频信号，从半分辨率起算。全分辨率做纯属浪费填充率。
+   ══════════════════════════════════════════════════════════════ */
+const POST_VERT = /* glsl */ `
+varying vec2 vUv;
+void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }
+`;
+
+/* 亮部提取：只有亮过阈值的部分参与光晕。
+   阈值是「发光」与「糊」的分界 —— 定低了整屏粒子都在发光，又变回一片雾；
+   定高了只有核芯发光，读起来是「一盏盏灯」。0.42 是两者之间的位置。 */
+const POST_BRIGHT = /* glsl */ `
+uniform sampler2D tSrc;
+uniform float uThresh;
+varying vec2 vUv;
+void main(){
+  vec4 c = texture2D(tSrc, vUv);
+  float l = dot(c.rgb, vec3(0.2126, 0.7152, 0.0722));
+  float k = smoothstep(uThresh, uThresh + 0.30, l);
+  gl_FragColor = vec4(c.rgb * k, c.a * k);
+}
+`;
+
+/* 9 抽样高斯（线性采样加权），H / V 各跑一次 = 可分离的二维模糊 */
+const POST_BLUR = /* glsl */ `
+uniform sampler2D tSrc;
+uniform vec2 uDir;
+varying vec2 vUv;
+void main(){
+  vec4 s  = texture2D(tSrc, vUv)            * 0.227027;
+  s += texture2D(tSrc, vUv + uDir * 1.3846) * 0.3162162;
+  s += texture2D(tSrc, vUv - uDir * 1.3846) * 0.3162162;
+  s += texture2D(tSrc, vUv + uDir * 3.2308) * 0.0702703;
+  s += texture2D(tSrc, vUv - uDir * 3.2308) * 0.0702703;
+  gl_FragColor = s;
+}
+`;
+
+const POST_COMP = /* glsl */ `
+uniform sampler2D tScene;
+uniform sampler2D tB1;
+uniform sampler2D tB2;
+uniform float uStrength;
+varying vec2 vUv;
+void main(){
+  vec4 base = texture2D(tScene, vUv);
+  vec3 b1 = texture2D(tB1, vUv).rgb;
+  vec3 b2 = texture2D(tB2, vUv).rgb;
+
+  // 近场光晕给「锐」，远场光晕给「散」—— 两档叠加才有真实的辉光层次
+  vec3 c = base.rgb + (b1 * 0.62 + b2 * 1.05) * uStrength;
+
+  // ACES 风格的 rolloff：密集处不死白（字形还在），暗部也不被抬灰
+  c = c / (c + 0.60) * 1.32;
+
+  // 径向暗角，把光收进画面中心。CSS .vignette 已经压过一轮，
+  // 这里只做很轻的一层（最暗处 −18%），避免叠加后边缘发死。
+  float vig = 1.0 - smoothstep(0.34, 1.05, length(vUv - 0.5) * 1.30);
+  c *= mix(0.82, 1.0, vig);
+
+  // 预乘 alpha：base.rgb 在 RT 里已经是加色累积值（AdditiveBlending 的
+  // src 已乘过 alpha），所以直接输出即可，页面背景才能透出来。
+  float a = clamp(base.a + (b1.g + b2.g) * 0.55, 0.0, 1.0);
+  gl_FragColor = vec4(c, a);
+}
+`;
+
+let postOK = false;
+let rtScene = null, rtA = null, rtB = null, rtC = null, rtD = null;
+let quadScene = null, quadCam = null, quadMesh = null;
+let matBright = null, matBlur = null, matComp = null;
+let postW = 0, postH = 0;
+/* 低端 / 省流设备直接跳过整条管线，退回直渲 ——
+   和这个项目「不给对方的设备和流量添负担」是同一条原则。
+   ?bloom=0 是留给排查用的开关：怀疑画质问题时能立刻 A/B，
+   不必改代码（`_pwtool/verify.js` 就靠它做对照）。 */
+const bloomOn = !lowEnd && !/[?&]bloom=0\b/.test(location.search);
+
+function makeRT(w, h) {
+  return new THREE.WebGLRenderTarget(Math.max(2, w | 0), Math.max(2, h | 0), {
+    minFilter: THREE.LinearFilter,
+    magFilter: THREE.LinearFilter,
+    format: THREE.RGBAFormat,
+    type: THREE.UnsignedByteType,   // HalfFloat 在部分 swiftshader 路径下会崩
+    depthBuffer: false,             // 粒子 depthTest:false，不需要深度缓冲
+    stencilBuffer: false,
+  });
+}
+
+function initPost() {
+  if (!bloomOn) return;
+  quadScene = new THREE.Scene();
+  quadCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  matBright = new THREE.ShaderMaterial({
+    uniforms: { tSrc: { value: null }, uThresh: { value: 0.42 } },
+    vertexShader: POST_VERT, fragmentShader: POST_BRIGHT,
+    depthTest: false, depthWrite: false,
+  });
+  matBlur = new THREE.ShaderMaterial({
+    uniforms: { tSrc: { value: null }, uDir: { value: new THREE.Vector2() } },
+    vertexShader: POST_VERT, fragmentShader: POST_BLUR,
+    depthTest: false, depthWrite: false,
+  });
+  /* NoBlending：输出本身就是预乘值，直接写进 framebuffer 的 alpha 通道，
+     不需要再和上一帧混合（每帧都是全屏重绘）。 */
+  matComp = new THREE.ShaderMaterial({
+    uniforms: {
+      tScene: { value: null }, tB1: { value: null }, tB2: { value: null },
+      uStrength: { value: 1.15 },
+    },
+    vertexShader: POST_VERT, fragmentShader: POST_COMP,
+    depthTest: false, depthWrite: false,
+    blending: THREE.NoBlending,
+  });
+  quadMesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), matComp);
+  quadMesh.frustumCulled = false;
+  quadScene.add(quadMesh);
+  postOK = true;
+  resizePost();
+}
+
+function disposeRT() {
+  for (const rt of [rtScene, rtA, rtB, rtC, rtD]) if (rt) rt.dispose();
+  rtScene = rtA = rtB = rtC = rtD = null;
+}
+
+/* 画质档位变化（perfWatch 降 DPR）和窗口尺寸变化都要重建 RT，
+   否则 RT 尺寸和实际绘制尺寸对不上，画面会被拉伸。 */
+function resizePost() {
+  if (!postOK || !renderer) return;
+  const w = Math.max(2, Math.round(innerWidth * dprCur));
+  const h = Math.max(2, Math.round(innerHeight * dprCur));
+  if (rtScene && w === postW && h === postH) return;
+  postW = w; postH = h;
+  disposeRT();
+  rtScene = makeRT(w, h);
+  rtA = makeRT(w / 2, h / 2);
+  rtB = makeRT(w / 2, h / 2);
+  rtC = makeRT(w / 4, h / 4);
+  rtD = makeRT(w / 4, h / 4);
+}
+
+function blit(mat, target) {
+  quadMesh.material = mat;
+  renderer.setRenderTarget(target);
+  renderer.render(quadScene, quadCam);   // autoClear 会先把目标清成 (0,0,0,0)
+}
+
+function renderPost() {
+  renderer.setRenderTarget(rtScene);
+  renderer.render(scene, camera);
+
+  matBright.uniforms.tSrc.value = rtScene.texture;
+  blit(matBright, rtA);
+
+  const hw = 1 / rtA.width, hh = 1 / rtA.height;
+  matBlur.uniforms.tSrc.value = rtA.texture;
+  matBlur.uniforms.uDir.value.set(hw, 0);
+  blit(matBlur, rtB);
+  matBlur.uniforms.tSrc.value = rtB.texture;
+  matBlur.uniforms.uDir.value.set(0, hh);
+  blit(matBlur, rtA);
+
+  // 步长翻倍即可得到更散的远场光晕，不必新建材质
+  matBlur.uniforms.tSrc.value = rtA.texture;
+  matBlur.uniforms.uDir.value.set(2 * hw, 0);
+  blit(matBlur, rtC);
+  matBlur.uniforms.tSrc.value = rtC.texture;
+  matBlur.uniforms.uDir.value.set(0, 2 * hh);
+  blit(matBlur, rtD);
+
+  matComp.uniforms.tScene.value = rtScene.texture;
+  matComp.uniforms.tB1.value = rtA.texture;
+  matComp.uniforms.tB2.value = rtD.texture;
+  blit(matComp, null);
+}
+
+/* ══════════════════════════════════════════════════════════════
    GL 初始化
    ══════════════════════════════════════════════════════════════ */
 let renderer, scene, camera, points, uni, aT6;
+let ptCount = 0;
 let progT = 0, progC = 0, glTime = 0;
+/* 重组脉冲（末章 HUD 的按钮）：0→1→0 的包络，峰在 t=0.5，全程 1.2s。
+   这是整页唯一一处「证明它在实时算」的交互 —— 截图看不出，动一下就懂。 */
+let burstT = 0, burst = 0;
+const fireBurst = () => { if (!reduced) burstT = 1; };
 let hasPointer = false;
 const mouseW = new THREE.Vector3(999, 999, 0);
 const mouseT = new THREE.Vector3(0, 0, 0);
@@ -747,6 +1005,7 @@ function applyPixelRatio() {
   renderer.setPixelRatio(dprCur);
   renderer.setSize(innerWidth, innerHeight);
   // uSize 每帧按章节的 ps 重算（见 renderGL），这里不写死
+  resizePost();
   return dprCur;
 }
 
@@ -780,6 +1039,7 @@ function initGL() {
 
   const small = Math.min(innerWidth, innerHeight) < 720 || !finePointer;
   const COUNT = (small || lowEnd) ? 30000 : 72000;
+  ptCount = COUNT;
 
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.BufferAttribute(formBridge(COUNT), 3));
@@ -802,8 +1062,13 @@ function initGL() {
     uMouse: { value: mouseW },
     uMouseF: { value: finePointer ? 1 : 0 },
     uSize: { value: small ? 5.6 : 4.6 },
-    // 暗底：主体粒子是冷灰蓝的星尘，vMix 挑出的少数粒子走章节强调色
-    uColA: { value: new THREE.Color('#5D6B82') },
+    uWarm: { value: CHAPTERS[0].warm },
+    uBurst: { value: 0 },
+    // 暗底：主体粒子是冷灰蓝的星尘，vMix 挑出的少数粒子走章节强调色。
+    // 原来的 #5D6B82 太暗 —— 加色混合下它就是一层灰膜，读不出「发光」。
+    // 提到 #93A6C0 后，同样的不透明度下点的核是亮的，只有晕是暗的，
+    // 于是整片粒子从「脏噪点」变成「星尘」。这是「清晰度」的另一半。
+    uColA: { value: new THREE.Color('#93A6C0') },
     uColB: { value: new THREE.Color(CHAPTERS[0].acc) },
     uOpacity: { value: CHAPTERS[0].op },
   };
@@ -846,6 +1111,11 @@ function renderGL(dt) {
   if (!glState.ok) return;
   glTime += dt;
   progC = damp(progC, progT, 4.5, dt);
+
+  if (burstT > 0) {
+    burstT = Math.max(0, burstT - dt / 1.2);
+    burst = (1 - burstT) * burstT * 4;
+  } else if (burst !== 0) burst = 0;
 
   const i = clamp(Math.floor(progC), 0, N_CH - 2);
   const f = progC - i;
@@ -898,6 +1168,8 @@ function renderGL(dt) {
   const fade = lerp(1, shortFade, clamp(progC, 0, 1));
 
   uni.uOpacity.value = lerp(A.op, B.op, sf) * (1 - pastCloser * 0.95) * fade;
+  uni.uWarm.value = lerp(A.warm ?? 0.2, B.warm ?? 0.2, sf);
+  uni.uBurst.value = burst;
   uni.uMouseF.value = finePointer ? lerp(A.mouseF, B.mouseF, sf) : 0;
   uni.uProg.value = progC;
   uni.uTime.value = glTime;
@@ -927,6 +1199,49 @@ try {
 } catch (err) {
   document.body.classList.add('no-webgl');
   console.warn('WebGL unavailable:', err);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   粒子读数条（末章 .gl-hud）
+   --------------------------------------------------------------
+   整页的排版一直是「文字优先、粒子退到空白里」，结果三个屏看下来
+   没人知道背景那些点是实时算出来的 —— 这一条就是把它说明白：
+   当前形态名 / 粒子数 / 变形进度 / 帧率，外加一个「重组」按钮。
+   读数按 ~0.4s 节流写 DOM，绝不逐帧写。
+   ══════════════════════════════════════════════════════════════ */
+const CH_FORM = ['BRIDGE', 'SHELL', 'HELIX', 'COLUMNS', 'CORE', 'LATTICE', 'WORDMARK'];
+const hudForm = document.getElementById('hudForm');
+const hudPoints = document.getElementById('hudPoints');
+const hudMorph = document.getElementById('hudMorph');
+const hudFps = document.getElementById('hudFps');
+const hudBurst = document.getElementById('hudBurst');
+const heroPoints = document.getElementById('heroPoints');
+
+if (ptCount) {
+  const n = ptCount.toLocaleString('en-US');
+  if (hudPoints) hudPoints.textContent = n;
+  if (heroPoints) heroPoints.textContent = n + ' PARTICLES';
+}
+if (hudBurst) hudBurst.addEventListener('click', fireBurst);
+if (glState.ok === false && hudForm) hudForm.textContent = 'NO WEBGL';
+
+let hudT = 0, hudFpsSmooth = 0, hudLastForm = '', hudLastMorph = '';
+
+function hudTick(dt, rawMs) {
+  if (!hudForm) return;
+  hudFpsSmooth = hudFpsSmooth ? hudFpsSmooth * 0.88 + rawMs * 0.12 : rawMs;
+  hudT += dt;
+  if (hudT < 0.4) return;
+  hudT = 0;
+  // 用 round 不用 floor：progC 是从上一章「渐近」到下一章的，
+  // 到 05→06 时它会停在 5.998 —— floor 永远读不到 06，
+  // 末章读数条会一直显示上一章的形态名。
+  const i = clamp(Math.round(progC), 0, N_CH - 1);
+  const form = String(i).padStart(2, '0') + ' / ' + CH_FORM[i];
+  if (form !== hudLastForm) { hudLastForm = form; hudForm.textContent = form; }
+  const morph = progC.toFixed(2);
+  if (hudMorph && morph !== hudLastMorph) { hudLastMorph = morph; hudMorph.textContent = morph; }
+  if (hudFps) hudFps.textContent = hudFpsSmooth > 1 ? Math.round(1000 / hudFpsSmooth) : '—';
 }
 
 /* ── preloader ──────────────────────────────────────────────
@@ -1041,6 +1356,7 @@ function frame(now) {
     document.body.classList.add('no-webgl');
     console.warn('WebGL render failed, falling back:', err);
   }
+  hudTick(dt, rawMs);
   firstFrameDone = true;
 }
 rafId = requestAnimationFrame(frame);
@@ -1062,6 +1378,7 @@ window.addEventListener('resize', () => {
       camera.updateProjectionMatrix();
       renderer.setSize(innerWidth, innerHeight);
       computeHalfExtents();
+      resizePost();
       // 词标宽度依赖视口，旋转设备后必须重采样
       if (aT6) {
         aT6.array.set(formText(aT6.count, 'VIBEBRIDGE', textWorldW()));

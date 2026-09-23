@@ -1,0 +1,21 @@
+{
+  "name": "aiflyf-skills",
+  "owner": {
+    "name": "FLYF"
+  },
+  "metadata": {
+    "description": "VibeBridge：面向 Vibe Coding 与创造活动的长期个人成长支持 Skill",
+    "version": "1.1.0"
+  },
+  "plugins": [
+    {
+      "name": "vibebridge",
+      "description": "Silently learns how you work from natural conversation, then offers optional, always refusable next steps and offline HTML reports. No diagnosis, no questionnaires.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/vibebridge"
+      ]
+    }
+  ]
+}

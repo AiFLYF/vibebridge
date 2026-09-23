@@ -280,14 +280,14 @@
         <p class="code-h"><span>bash</span><span>唯一写入路径</span></p>
 <pre><code><span class="cm"># 你永远不直接编辑 JSON。所有写入走 CLI，</span>
 <span class="cm"># 它会做 schema 校验、原子写入、备份和日志。</span>
-<span class="pr">$</span> python core/vb.py observe --session auto --json <span class="st">'[
+<span class="pr">$</span> python scripts/vb.py observe --session auto --json <span class="st">'[
   {"category":"interest","key":"audio_visual_creation",
    "statement":"用户主动提出想做音乐可视化效果",
    "domains":["expression"],"strength":0.7}
 ]'</span>
 
 <span class="cm"># 只记录发生了什么，不记录它意味着什么。</span>
-<span class="pr">$</span> python core/vb.py session close <span class="st">--summary "做完了音乐可视化的频谱部分。"</span></code></pre>
+<span class="pr">$</span> python scripts/vb.py session close <span class="st">--summary "做完了音乐可视化的频谱部分。"</span></code></pre>
       </div>
     </div>
 
@@ -427,15 +427,18 @@
     <p class="sec-label" data-reveal><span>05</span><i></i>INSTALL <em>安装</em></p>
 
     <h2 class="big" data-skew>
-      <span class="line"><span data-reveal style="--d:0ms">两条命令。</span></span>
+      <span class="line"><span data-reveal style="--d:0ms">一条命令。</span></span>
       <span class="line"><span data-reveal style="--d:80ms" class="stroke">然后照常做东西。</span></span>
     </h2>
 
     <div class="grid-2">
       <div class="code" data-reveal style="--d:160ms">
         <p class="code-h"><span>install</span><span>Python 3.9+ · 零第三方依赖</span></p>
-<pre><code><span class="pr">$</span> git clone https://github.com/AiFLYF/vibebridge.git
-<span class="pr">$</span> cp -r vibebridge ~/.claude/skills/vibebridge
+<pre><code><span class="pr">$</span> npx skills add AiFLYF/vibebridge
+
+<span class="cm"># 或者手动安装：</span>
+<span class="pr">$</span> git clone https://github.com/AiFLYF/vibebridge.git
+<span class="pr">$</span> cp -r vibebridge/skills/vibebridge ~/.claude/skills/vibebridge
 
 <span class="cm"># 然后，在对话中：</span>
 <span class="pr">/</span>vb-init
@@ -443,7 +446,7 @@
 <span class="cm"># 初始化只创建目录和配置文件，不会问你任何问题。</span>
 
 <span class="cm"># 验证安装：</span>
-<span class="pr">$</span> python ~/.claude/skills/vibebridge/core/vb.py doctor</code></pre>
+<span class="pr">$</span> python ~/.claude/skills/vibebridge/scripts/vb.py doctor</code></pre>
       </div>
 
       <div class="panel" data-reveal style="--d:220ms">

@@ -19,40 +19,44 @@
 - 不替换你的目标。成长机会只能从你已有的目标里派生
 - 不上传。全部数据在本地，报告零网络请求
 
-## 架构
-
-```
-LLM 决策层        判断何时观察、如何措辞、什么是自然机会
-      ↕ CLI       唯一接口，LLM 不直接编辑任何 JSON
-确定性数据层      存储 / 置信度演算 / 指标计算 / 安全闸门 / 报告生成
-```
-
-数据流：
-
-```
-自然对话 → 观察 → 候选记忆 → 跨会话验证 → 长期画像
-                                    ↓
-                            自适应成长引擎
-                                    ↓
-                    可选实验 → 结果 → Analytics → HTML 报告
-```
-
-`observations.jsonl` **只追加、不可变，是唯一真相源**。候选记忆、验证记忆、画像、指标全部是派生物，任何时候可以完整重算。
-
 ## 安装
 
 需要 Python 3.9+，零第三方依赖。
 
+### 一条命令（推荐，支持 Claude Code / Codex / Cursor / Copilot 等数十种 agent）
+
+```bash
+npx skills add AiFLYF/vibebridge
+```
+
+只装这一个 skill、装到用户级、跳过确认：
+
+```bash
+npx skills add AiFLYF/vibebridge --skill vibebridge -g -y
+```
+
+### Claude Code 插件市场
+
+```
+/plugin marketplace add AiFLYF/vibebridge
+/plugin install vibebridge@aiflyf-skills
+```
+
+### 手动安装
+
 ```bash
 git clone https://github.com/AiFLYF/vibebridge.git
-cp -r vibebridge ~/.claude/skills/vibebridge
+cp -r vibebridge/skills/vibebridge ~/.claude/skills/vibebridge
 ```
 
 Windows PowerShell：
 
 ```powershell
-Copy-Item -Recurse vibebridge "$HOME\.claude\skills\vibebridge"
+Copy-Item -Recurse vibebridge\skills\vibebridge "$HOME\.claude\skills\vibebridge"
 ```
+
+Codex 从仓库的 `.agents/skills` 读取（用户级目录常见为 `~/.agents/skills/`，以
+Codex 官方文档 "Where Codex loads local skills" 为准）；其他 agent 交给 `npx skills` 自动处理。
 
 然后在对话中：
 
@@ -62,12 +66,12 @@ Copy-Item -Recurse vibebridge "$HOME\.claude\skills\vibebridge"
 
 初始化只创建目录和配置文件，**不会问你任何问题**。
 
-可选：装上斜杠命令（`/vb-report`、`/vb-profile` 等），见 [`install/README.md`](install/README.md)。不装也能用，正常聊天时 skill 会自动生效。
+可选：装上斜杠命令（`/vb-report`、`/vb-profile` 等），见 [`skills/vibebridge/commands/README.md`](skills/vibebridge/commands/README.md)。不装也能用，正常聊天时 skill 会自动生效。
 
 验证安装：
 
 ```bash
-python ~/.claude/skills/vibebridge/core/vb.py doctor
+python ~/.claude/skills/vibebridge/scripts/vb.py doctor
 ```
 
 ## 代码与数据分离
@@ -153,6 +157,34 @@ confidence = saturation(证据权重) × consistency(支持/反对)
 - `vb export` 完整导出，`vb reset all --confirm` 彻底删除
 - 仓库里的示例数据全部是虚构人物
 
+## 仓库结构
+
+遵循 [Agent Skills 开放标准](https://agentskills.io/specification)：
+
+```
+vibebridge/
+├── skills/
+│   └── vibebridge/          ← 会被安装的那一个 skill
+│       ├── SKILL.md         必需：元数据 + 指令
+│       ├── scripts/         CLI 引擎（vb.py + 各模块）
+│       ├── references/      按需加载的深入文档
+│       ├── assets/          dashboard.html 报告模板
+│       ├── commands/        可选斜杠命令源文件
+│       ├── examples/        虚构的示例数据集
+│       ├── CONFIG.md  INIT.md  DISCLAIMER.md
+│       └── LICENSE.txt
+├── .claude-plugin/
+│   └── marketplace.json     Claude Code 插件市场清单
+├── docs/                    GitHub Pages 展示站点
+├── tools/                   文档站与示例数据的开发工具
+├── tests/                   端到端验收套件
+├── template/SKILL.example.md  新建 skill 的模板（刻意不叫 SKILL.md，
+│                              否则会被 npx skills 当成可安装的第二个 skill）
+└── spec/agent-skills-spec.md
+```
+
+Skill 目录名必须与 frontmatter 里的 `name` 一致，这里是 `vibebridge`。
+
 ## 测试
 
 ```bash
@@ -168,23 +200,36 @@ python tests/validate_html.py <report.html>
 ## 开发
 
 ```
-core/       schema store memory observe session project experiment
-            growth safety profile analytics insight report migrate vb
-templates/  dashboard.html
-references/ 按需加载的深入文档
-tests/      run_all simulate validate_html
-examples/   虚构的示例数据集
+skills/vibebridge/scripts/    schema store memory observe session project
+                              experiment growth safety profile analytics
+                              insight report migrate vb
+skills/vibebridge/assets/     dashboard.html
+skills/vibebridge/references/ 按需加载的深入文档
+tools/                        build_examples.py fetch_fonts.py 及文档站校验脚本
+tests/                        run_all simulate validate_html
+skills/vibebridge/examples/   虚构的示例数据集
 ```
 
-添加 schema 迁移：在 `core/migrate.py` 用 `@migration("1.0.0", "1.1.0")` 装饰。迁移前自动快照，失败自动回滚。
+重新生成示例数据集：
+
+```bash
+python tools/build_examples.py
+```
+
+添加 schema 迁移：在 `skills/vibebridge/scripts/migrate.py` 用 `@migration("1.0.0", "1.1.0")` 装饰。迁移前自动快照，失败自动回滚。
+
+发布前校验 skill 结构：
+
+```bash
+python tools/validate_skill.py skills/*
+```
 
 ## 许可
 
-MIT
+MIT，见 [LICENSE](LICENSE)。第三方素材声明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
 ## 免责声明
 
 本项目基于交互过程中产生的行为数据，用于长期自我观察、个性化支持和成长复盘，不构成医学诊断、临床评估或任何形式的疗效判断。它不能替代专业支持。如果你或你关心的人正在经历心理危机，请联系专业人士（中国大陆心理援助热线 12356，紧急情况 120）。
 
-完整声明见 [DISCLAIMER.md](DISCLAIMER.md)。
-
+完整声明见 [`skills/vibebridge/DISCLAIMER.md`](skills/vibebridge/DISCLAIMER.md)。

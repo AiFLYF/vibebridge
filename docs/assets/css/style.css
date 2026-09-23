@@ -1291,7 +1291,7 @@ body.no-webgl .gl-hud-btn { display: none; }
 }
 
 /* CTA 前的三条底线承诺：隐私 / 掌控 / 安全闸门。
-   措辞全部能在 core/safety.py 和 README 里找到对应实现。
+   措辞全部能在 scripts/safety.py 和 README 里找到对应实现。
    三栏宽度按文本量分：SAFETY 最长，给最宽。 */
 .closer-facts {
   display: grid;

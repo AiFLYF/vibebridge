@@ -20,7 +20,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-CORE = ROOT / "core"
+SKILL = ROOT / "skills" / "vibebridge"
+CORE = SKILL / "scripts"
 sys.path.insert(0, str(CORE))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 

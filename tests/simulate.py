@@ -12,7 +12,7 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-CORE = Path(__file__).resolve().parent.parent / "core"
+CORE = Path(__file__).resolve().parent.parent / "skills" / "vibebridge" / "scripts"
 sys.path.insert(0, str(CORE))
 
 

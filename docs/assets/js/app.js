@@ -875,8 +875,7 @@ let matBright = null, matBlur = null, matComp = null;
 let postW = 0, postH = 0;
 /* 低端 / 省流设备直接跳过整条管线，退回直渲 ——
    和这个项目「不给对方的设备和流量添负担」是同一条原则。
-   ?bloom=0 是留给排查用的开关：怀疑画质问题时能立刻 A/B，
-   不必改代码（`_pwtool/verify.js` 就靠它做对照）。 */
+   ?bloom=0 是留给排查用的开关：怀疑画质问题时能立刻 A/B，不必改代码。 */
 const bloomOn = !lowEnd && !/[?&]bloom=0\b/.test(location.search);
 
 function makeRT(w, h) {

@@ -37,7 +37,7 @@ data/
 /logs/
 
 # The anonymous fictional demo dataset is intentionally tracked.
-!examples/
+!skills/vibebridge/examples/
 
 # Test artifacts
 vb_test*/
@@ -58,6 +58,10 @@ env/
 # Local assistant workspace (review notes, session memory).
 # Not project source, and not meant to be published.
 .workbuddy-ai/
+.workbuddy/
+
+# Node (npx skills, docs tooling)
+node_modules/
 
 # Editors and OS
 .vscode/
@@ -79,3 +83,4 @@ desktop.ini
 # 验证工具的输出目录约定为根目录下划线前缀目录（_shots_opt/、_now2_m/、_v3/ …）
 /_*
 _shots*/
+_pwtool/

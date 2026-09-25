@@ -6,7 +6,7 @@
 
 **这不是医疗工具。** 它不诊断、不评估、不判断"治愈程度"，也不把"看起来像正常人"当成目标。
 
-🖥️ **[项目介绍页 → aiflyf.github.io/vibebridge](https://aiflyf.github.io/vibebridge/)**
+完整介绍见 [aiflyf.github.io/vibebridge](https://aiflyf.github.io/vibebridge/)。
 
 ---
 

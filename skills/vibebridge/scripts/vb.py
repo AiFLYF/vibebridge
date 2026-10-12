@@ -409,15 +409,19 @@ def cmd_milestone(args):
         if not args.title:
             fail("add 需要 --title")
         import safety
-        safety.assert_clean(args.title, "milestone.title")
-        rec = {"id": "ms_" + str(len(data["items"]) + 1).zfill(4),
+        # 里程碑标题是用户自己的记录：敏感词只警告，不拦截。
+        hits = safety.check_user_text(args.title, "milestone.title")
+        rec = {"id": schema.next_id("ms", [r.get("id") for r in data["items"]], 4),
                "ts": args.ts or schema.now(), "title": args.title,
                "detail": args.detail or "", "kind": args.kind or "growth_signal",
                "project_id": args.project, "session_id": args.session,
                "evidence": (args.evidence.split(",") if args.evidence else [])}
         data["items"].append(rec)
         store.save("milestones", data)
-        emit({"ok": True, "milestone": rec})
+        out = {"ok": True, "milestone": rec}
+        if hits:
+            out["content_warnings"] = [{"where": "milestone.title", "terms": hits}]
+        emit(out)
     else:
         emit({"ok": True, "milestones": data["items"]})
 
@@ -458,6 +462,8 @@ def cmd_export(args):
         for root, dirs, files in os.walk(home):
             dirs[:] = [d for d in dirs if d not in ("exports", "backups")]
             for f in files:
+                if f == store.LOCK_NAME:
+                    continue
                 full = os.path.join(root, f)
                 z.write(full, os.path.relpath(full, home))
     emit({"ok": True, "export": str(out),
@@ -694,7 +700,10 @@ def main(argv=None):
     ap = build_parser()
     args = ap.parse_args(argv)
     try:
-        args.fn(args)
+        # 所有命令都在排他锁内执行：读-改-写序列并发时会静默丢失更新，
+        # 原子写只能防损坏，防不了丢失。锁带心跳与过期接管，崩溃不留死锁。
+        with store.exclusive_lock():
+            args.fn(args)
     except SystemExit:
         raise
     except Exception as e:

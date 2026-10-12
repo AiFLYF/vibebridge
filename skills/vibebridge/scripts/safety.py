@@ -6,6 +6,21 @@ Three jobs:
   2. Lint every generated string for clinical or curative framing.
   3. Detect explicit crisis language and hand off to human support instead of
      inventing a plan.
+
+Two tiers of linting, and the difference matters:
+
+  * assert_clean -- for text the SYSTEM authors in its own voice (offer
+    objectives, insight templates, disclaimers). A hit is a bug in the system:
+    block it at authoring time. This destroys nothing, so failing loudly is
+    both safe and actionable.
+
+  * check_user_text -- for the user's own words (project names, observation
+    statements and excerpts, session summaries, milestone titles, experiment
+    notes). These are records of the user's life, not system output. A hit is
+    noted, logged and surfaced as a warning; it never blocks anything. An
+    ordinary word like "治愈系" in a project name must not be able to hold the
+    user's own report hostage -- a tool that promises never to block the user
+    cannot turn around and block their data.
 """
 from datetime import datetime, timedelta, timezone
 
@@ -86,6 +101,19 @@ def assert_clean(text, where="output"):
         store.log_event("SAFETY_BLOCK", where + " contained " + ", ".join(hits))
         raise ValueError("安全引擎拦截: " + where + " 含有禁用措辞 " + ", ".join(hits))
     return text
+
+
+def check_user_text(text, where="user_content"):
+    """Lint user-authored content for awareness only. Never raises.
+
+    Returns the list of hits (empty means clean). Hits are logged and meant to
+    be surfaced as a warning next to the content, never to stop a write or a
+    report.
+    """
+    hits = lint(text)
+    if hits:
+        store.log_event("CONTENT_NOTE", where + " contains " + ", ".join(hits))
+    return hits
 
 
 def scan_crisis(text):

@@ -37,9 +37,10 @@ def _days_between(a, b):
     return max(0.0, (b - a).total_seconds() / 86400.0)
 
 
-def compute_confidence(item, ref_time=None):
+def compute_confidence(item, ref_time=None, cfg=None):
     """Pure function of accumulated weights. Returns confidence within 0.02..0.97."""
-    cfg = store.load("config")["confidence"]
+    if cfg is None:
+        cfg = store.load("config")["confidence"]
     ref = ref_time or datetime.now(timezone.utc)
     sup = item.get("support_w", 0.0)
     con = item.get("contradict_w", 0.0)
@@ -84,9 +85,10 @@ def _weight_for(item, obs):
     return w * (SAME_SESSION_DAMPING if seen_here else 1.0), sid, seen_here
 
 
-def apply_observation(cands, conflicts, obs, ref_time=None):
+def apply_observation(cands, conflicts, obs, ref_time=None, cfg=None):
     """Fold one observation into the belief table. Returns (item, transition)."""
-    cfg = store.load("config")["confidence"]
+    if cfg is None:
+        cfg = store.load("config")["confidence"]
     key = obs["key"]
     items = cands["items"]
     item = items.get(key) or _blank(obs)
@@ -116,7 +118,7 @@ def apply_observation(cands, conflicts, obs, ref_time=None):
     if obs["polarity"] == "support" and len(obs["statement"]) > len(item["statement"]):
         item["statement"] = obs["statement"]
 
-    item["confidence"] = compute_confidence(item, ref_time)
+    item["confidence"] = compute_confidence(item, ref_time, cfg)
 
     promote_ok = (item["confidence"] >= cfg["promote_confidence"]
                   and item["evidence_count"] >= cfg["promote_evidence"]
@@ -163,13 +165,14 @@ def apply_observation(cands, conflicts, obs, ref_time=None):
     return item, transition
 
 
-def refresh_decay(cands, ref_time=None):
+def refresh_decay(cands, ref_time=None, cfg=None):
     """Recompute every confidence against the clock so stale beliefs fade."""
-    cfg = store.load("config")["confidence"]
+    if cfg is None:
+        cfg = store.load("config")["confidence"]
     changed = []
     for key, item in cands["items"].items():
         old = item.get("confidence", 0.0)
-        new = compute_confidence(item, ref_time)
+        new = compute_confidence(item, ref_time, cfg)
         if abs(new - old) > 1e-9:
             item["confidence"] = new
             if item["status"] == "verified" and new < cfg["demote_confidence"]:
@@ -192,12 +195,13 @@ def ingest(obs_list, ref_time=None):
     """Public entry: fold a batch of stored observations into memory."""
     cands = store.load("candidates")
     conflicts = store.load("conflicts")
+    cfg = store.load("config")["confidence"]  # 整批只读一次，不逐条重读
     results = []
     for obs in obs_list:
-        item, tr = apply_observation(cands, conflicts, obs, ref_time)
+        item, tr = apply_observation(cands, conflicts, obs, ref_time, cfg)
         results.append({"key": item["key"], "confidence": item["confidence"],
                         "status": item["status"], "transition": tr})
-    refresh_decay(cands, ref_time)
+    refresh_decay(cands, ref_time, cfg)
     store.save("candidates", cands)
     store.save("conflicts", conflicts)
     store.save("verified", project_verified(cands))
@@ -213,12 +217,13 @@ def rebuild(ref_time=None):
     obs = sorted(store.observations(), key=lambda o: (o.get("ts", ""), o.get("id", "")))
     cands = schema.DEFAULTS["candidates"]()
     conflicts = schema.DEFAULTS["conflicts"]()
+    cfg = store.load("config")["confidence"]
     for o in obs:
         try:
-            apply_observation(cands, conflicts, o, ref_time)
+            apply_observation(cands, conflicts, o, ref_time, cfg)
         except (KeyError, TypeError) as e:
             store.log_event("REBUILD_SKIP", str(o.get("id")) + " " + str(e))
-    refresh_decay(cands, ref_time)
+    refresh_decay(cands, ref_time, cfg)
     store.save("candidates", cands)
     store.save("conflicts", conflicts)
     store.save("verified", project_verified(cands))

@@ -1128,6 +1128,75 @@ body.is-loaded .hero-lower .line > span { transform: translateY(0); }
   color: var(--bone);
   margin-bottom: 3px;
 }
+.insight-lead {
+  margin-top: 0;
+  font-size: 0.86rem;
+  color: var(--mut);
+}
+
+/* ── live report preview ───────────────────────────────────
+   暗色页面里嵌一份纸白报告。外框用页面自己的玻璃语言（描边 + 灯色微光），
+   iframe 里保持报告的纸白原样，不加任何滤镜 —— 对比本身就是产品的样子。
+   高度用 clamp 兜住小屏；加载中是 #faf9f7，和报告底色一致，不闪。 */
+.report-live { margin-bottom: clamp(16px, 2vw, 26px); }
+.report-live-lead {
+  max-width: 780px;
+  font-size: 0.95rem;
+  color: var(--mut);
+  margin: 1.4rem 0 1.6rem;
+}
+.report-live-lead code { color: var(--bone); }
+.report-frame {
+  border: 1px solid rgba(200, 214, 235, 0.16);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #faf9f7;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5), 0 0 60px var(--acc-12);
+}
+.rf-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 16px;
+  background: linear-gradient(160deg, rgba(19, 24, 33, 0.96), rgba(13, 17, 24, 0.94));
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mut-2);
+}
+.rf-dots { display: inline-flex; gap: 6px; flex: none; }
+.rf-dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--line-2);
+}
+.rf-dots i:first-child { background: var(--acc-60); }
+.rf-url {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+.rf-open { flex: none; color: var(--acc); }
+.rf-open:hover { text-decoration: underline; }
+.report-frame iframe {
+  display: block;
+  width: 100%;
+  height: clamp(460px, 56vh, 640px);
+  border: 0;
+  background: #faf9f7;
+}
+.report-live-foot {
+  margin-top: 1.2rem;
+  font-size: 0.86rem;
+  color: var(--mut);
+}
+.report-live-foot code { color: var(--bone); font-size: 0.8rem; }
 
 /* ── cta ──────────────────────────────────────────────────── */
 .cta {

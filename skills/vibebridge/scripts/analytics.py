@@ -193,10 +193,17 @@ def compute_behavior(observations, start, end):
 
 
 def compute_series(observations, start, end, days, bucket_days=7):
-    """Weekly buckets per metric, for trend lines."""
+    """Weekly buckets per metric, for trend lines.
+
+    Single pass: every timestamp is parsed once and mapped to its bucket by
+    arithmetic, instead of re-parsing and re-scanning per metric per bucket
+    (the old shape was O(buckets x metrics x observations) with a fromisoformat
+    call for every combination -- seconds of pure waste on a few thousand rows).
+    """
     if not observations:
         return {"buckets": [], "metrics": {}}
-    times = sorted(t for t in (_parse(o.get("ts")) for o in observations) if t)
+    prepared = [(o, _parse(o.get("ts"))) for o in observations]
+    times = sorted(t for _, t in prepared if t)
     if not times:
         return {"buckets": [], "metrics": {}}
     first = start or times[0]
@@ -211,16 +218,26 @@ def compute_series(observations, start, end, days, bucket_days=7):
         edges.append((b_start, b_end))
         buckets.append(_iso(b_start)[:10])
 
+    counts = {name: [0] * n for name in METRIC_SPECS}
+    bucket_seconds = bucket_days * 86400.0
+    for o, t in prepared:
+        if t is None:
+            continue
+        idx = int((t - first).total_seconds() // bucket_seconds)
+        if idx < 0 or idx >= n:
+            continue
+        for name, spec in METRIC_SPECS.items():
+            if _matches(spec, o):
+                counts[name][idx] += 1
+
     series = {}
     for name, spec in METRIC_SPECS.items():
-        vals, counts = [], []
-        for b_start, b_end in edges:
-            hits = [o for o in observations
-                    if (lambda t: t is not None and b_start <= t < b_end)(_parse(o.get("ts")))
-                    and _matches(spec, o)]
-            vals.append(_score(len(hits), bucket_days, spec["rate_k"]))
-            counts.append(len(hits))
-        series[name] = {"label": spec["label"], "values": vals, "counts": counts}
+        cs = counts[name]
+        series[name] = {
+            "label": spec["label"],
+            "values": [_score(cs[i], bucket_days, spec["rate_k"]) for i in range(n)],
+            "counts": cs,
+        }
     return {"buckets": buckets, "bucket_days": bucket_days, "metrics": series}
 
 
@@ -228,10 +245,12 @@ def compute(window="30D", now=None, persist=True):
     now = now or datetime.now(timezone.utc)
     start, end, days = window_bounds(window, now)
     all_obs = store.observations()
-    obs = [o for o in all_obs if _in_window(o, start, end)]
+    # 每条观察的 ts 只解析一次：窗口过滤、ALL 跨度、序列分桶共用。
+    prepared = [(o, _parse(o.get("ts"))) for o in all_obs]
+    obs = [o for o, t in prepared
+           if t is not None and (start is None or t >= start) and t <= end]
     if days is None:
-        first = min((_parse(o.get("ts")) for o in all_obs if _parse(o.get("ts"))),
-                    default=now)
+        first = min((t for _, t in prepared if t is not None), default=now)
         days = max(1, int((now - first).total_seconds() // 86400) + 1)
 
     result = {
@@ -268,18 +287,32 @@ def compute(window="30D", now=None, persist=True):
 
 
 def compare(window_a="30D", window_b=None, now=None):
-    """Change between the current window and the immediately preceding one."""
+    """Change between the current window and the immediately preceding one.
+
+    Only metrics are needed here, so this filters both windows directly
+    instead of running two full compute() passes (series, behavior, growth
+    state were all discarded work).
+    """
     now = now or datetime.now(timezone.utc)
-    days = WINDOWS.get(window_a) or 30
-    cur = compute(window_a, now=now, persist=False)
-    prev_end = now - timedelta(days=days)
+    days = WINDOWS.get(window_a)
     all_obs = store.observations()
+    prepared = [(o, _parse(o.get("ts"))) for o in all_obs]
+    if days is None:
+        # ALL 窗口的跨度从最早一条观察算起，与 compute() 的口径保持一致。
+        first = min((t for _, t in prepared if t is not None), default=now)
+        days = max(1, int((now - first).total_seconds() // 86400) + 1)
+    cur_start = now - timedelta(days=days)
+    cur_obs = [o for o, t in prepared
+               if t is not None and cur_start <= t <= now]
+    prev_end = cur_start
     prev_start = prev_end - timedelta(days=days)
-    prev_obs = [o for o in all_obs if _in_window(o, prev_start, prev_end)]
+    prev_obs = [o for o, t in prepared
+                if t is not None and prev_start <= t < prev_end]
+    cur_m = compute_metrics(cur_obs, cur_start, now, days)
     prev = compute_metrics(prev_obs, prev_start, prev_end, days)
 
     deltas = {}
-    for name, m in cur["metrics"].items():
+    for name, m in cur_m.items():
         p = prev.get(name, {})
         deltas[name] = {
             "label": m["label"],

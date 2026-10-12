@@ -12,6 +12,7 @@ Observations are appended to an immutable JSONL log. That log is the single
 source of truth; every other artifact in the system is rebuildable from it.
 """
 import schema
+import safety
 import store
 import paths
 import memory
@@ -22,7 +23,17 @@ def _next_seq(n=1):
     ver = store.load("version")
     seq = ver.get("obs_seq")
     if seq is None:
-        seq = len(store.observations())
+        # 从现存最大 ID 推导，不用 len()：compact 丢掉损坏行后 len 会小于
+        # 最大 ID，用 len 会分配出重复 ID，污染唯一真相源。
+        top = 0
+        for r in store.observations():
+            rid = str(r.get("id", ""))
+            if rid.startswith("obs_"):
+                try:
+                    top = max(top, int(rid[4:]))
+                except ValueError:
+                    continue
+        seq = top
     start = seq + 1
     ver["obs_seq"] = seq + n
     store.save("version", ver)
@@ -69,6 +80,13 @@ def record(items, session_id=None, project_id=None, experiment_id=None,
         if flagged:
             warnings.append({"id": obs["id"], "statement": obs["statement"],
                              "issue": "疑似推断而非观察", "markers": flagged})
+        # statement / excerpt 是用户行为的原始记录，不是系统措辞：
+        # 敏感词只警告并原样保留，绝不因此拒绝记录。
+        for field, value in (("statement", obs["statement"]), ("excerpt", obs["excerpt"])):
+            hits = safety.check_user_text(value, "observation." + field)
+            if hits:
+                warnings.append({"id": obs["id"], "field": field,
+                                 "issue": "含有敏感词，已按原样保留", "markers": hits})
         prepared.append(obs)
 
     fp = paths.p("observations")
@@ -91,8 +109,19 @@ def record(items, session_id=None, project_id=None, experiment_id=None,
             "warnings": warnings}
 
 
+def _parse_ts(ts):
+    from datetime import datetime, timezone
+    try:
+        return datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+    except (ValueError, TypeError):
+        return None
+
+
 def query(limit=50, category=None, key=None, session_id=None, since=None, until=None):
     recs = store.observations()
+    # 边界按时间比较，不按字符串：混合时区格式（Z / +00:00 / naive）下
+    # 字典序不等于时间序。解析不了的记录在有边界时视为不在窗口内。
+    since_dt, until_dt = _parse_ts(since), _parse_ts(until)
     out = []
     for r in recs:
         if category and r.get("category") != category:
@@ -101,10 +130,14 @@ def query(limit=50, category=None, key=None, session_id=None, since=None, until=
             continue
         if session_id and r.get("session_id") != session_id:
             continue
-        if since and str(r.get("ts", "")) < since:
-            continue
-        if until and str(r.get("ts", "")) > until:
-            continue
+        if since_dt or until_dt:
+            t = _parse_ts(r.get("ts"))
+            if t is None:
+                continue
+            if since_dt and t < since_dt:
+                continue
+            if until_dt and t > until_dt:
+                continue
         out.append(r)
     out.sort(key=lambda r: str(r.get("ts", "")))
     return out[-limit:] if limit else out

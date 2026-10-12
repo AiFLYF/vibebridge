@@ -12,15 +12,101 @@ import json
 import os
 import shutil
 import tempfile
+import threading
+import time
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
 import paths
 import schema
 
+# ---------------------------------------------------------------------------
+# Cross-process write lock
+#
+# Every mutation is load -> modify -> save on shared JSON files. Atomic writes
+# keep files uncorrupted, but two concurrent CLI invocations would still silently
+# drop one another's updates (last writer wins). One short exclusive lock around
+# each command closes that hole. It is deliberately tiny:
+#   * O_CREAT|O_EXCL create -- atomic on Windows and POSIX alike, no fcntl.
+#   * A heartbeat thread touches the lock while the command runs, so a slow
+#     command is never mistaken for a dead one.
+#   * A lock with no heartbeat for LOCK_STALE_SECONDS is stolen, so a killed
+#     process can never leave a permanent deadlock.
+LOCK_NAME = ".vibebridge.lock"
+LOCK_TIMEOUT = 10.0
+LOCK_STALE_SECONDS = 30.0
+
 
 def _ensure_parent(fp):
     fp.parent.mkdir(parents=True, exist_ok=True)
+
+
+def _lock_path():
+    return paths.home() / LOCK_NAME
+
+
+def _heartbeat(fp, stop):
+    """Keep the lock fresh so a long command is never treated as abandoned."""
+    while not stop.wait(5.0):
+        try:
+            os.utime(fp, None)
+        except OSError:
+            return
+
+
+@contextmanager
+def exclusive_lock(timeout=LOCK_TIMEOUT, stale=LOCK_STALE_SECONDS):
+    """Serialize writers across processes. Reentrant use within one process is
+    not supported (no command spawns another vb process)."""
+    fp = _lock_path()
+    _ensure_parent(fp)
+    deadline = time.monotonic() + timeout
+    while True:
+        try:
+            fd = os.open(fp, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            break
+        except FileExistsError:
+            try:
+                age = time.time() - fp.stat().st_mtime
+            except OSError:
+                age = 0.0
+            if age > stale:
+                # 上一个持有者已经消失（被 kill / 崩溃）。接管好过永久死锁。
+                log_event("LOCK_STALE", "stealing lock older than %.0fs" % age)
+                try:
+                    os.unlink(fp)
+                except OSError:
+                    pass
+                continue
+            if time.monotonic() > deadline:
+                raise RuntimeError(
+                    "另一个 vb 进程正在写入数据（锁文件: " + str(fp) + "）。"
+                    "若确认没有其他进程在运行，可手动删除该文件后重试。")
+            time.sleep(0.1)
+    # 写入 pid 后立刻关闭 fd：锁的互斥力来自"文件存在"这个事实，不需要
+    # 持有句柄。Windows 上打开中的文件无法删除，握着 fd 会让 reset all
+    # 连锁文件都删不掉（PermissionError）。
+    try:
+        os.write(fd, str(os.getpid()).encode("ascii", "replace"))
+    except OSError:
+        pass
+    try:
+        os.close(fd)
+    except OSError:
+        pass
+    stop = threading.Event()
+    hb = threading.Thread(target=_heartbeat, args=(fp, stop), daemon=True)
+    hb.start()
+    try:
+        yield
+    finally:
+        stop.set()
+        hb.join(timeout=1.0)
+        try:
+            os.unlink(fp)
+        except OSError:
+            pass
 
 
 def atomic_write_text(fp, text):

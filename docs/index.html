@@ -466,15 +466,37 @@
       </div>
     </div>
 
+    <!-- ══ 真实报告预览 ══ -->
+    <!-- 这一块是全页的"展品"：不是设计稿，是仓库示例数据真实跑出来的报告，
+         直接嵌在页面里给读者点。iframe 保持报告的纸白原样 —— 暗色页面里
+         一份发光的纸，对比本身就是产品的样子。滚轮进 iframe 后归 iframe 管，
+         父页的惯性滚动不会劫持它（wheel 事件不跨 document 冒泡）。 -->
+    <div class="report-live" data-reveal style="--d:260ms">
+      <p class="panel-h">报告 · LIVE PREVIEW · 由仓库示例数据真实生成</p>
+      <p class="report-live-lead">
+        用一段时间之后，<code>/vb-report</code> 生成的就是这个东西。下面嵌进来的是仓库示例数据
+        （一个虚构用户，大约八周）真实跑出来的报告 —— 可以点、可以切页、可以下钻到原始观察记录。
+      </p>
+      <div class="report-frame">
+        <div class="rf-bar">
+          <span class="rf-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="rf-url">~/.vibebridge/reports/latest.html · 30D · 34 条记录</span>
+          <a class="rf-open" href="report-demo.html" target="_blank" rel="noopener">全屏打开</a>
+        </div>
+        <iframe src="report-demo.html" title="VibeBridge 报告预览：仓库示例数据真实生成，可交互" loading="lazy"></iframe>
+      </div>
+      <p class="report-live-foot">
+        11 个页面：总览 · 趋势 · 行为 · 成长时间线 · 项目 · 实验 · 互动地图 · 记忆浏览器 · 证据浏览器 · 洞察 · 支持策略。
+        时间窗口 <code>7D / 30D / 90D / 6M / ALL</code>，所有数字可以点击展开到原始观察记录。
+        单文件、零网络请求，可以直接拷走或存档。
+      </p>
+    </div>
+
     <div class="grid-2">
-      <div class="panel" data-reveal style="--d:280ms">
-        <p class="panel-h">报告 · 11 个页面，单文件离线 HTML</p>
-        <p class="report-pages">
-          总览 · 趋势 · 行为 · 成长时间线 · 项目 · 实验 · 互动地图 · 记忆浏览器 · 证据浏览器 · 洞察 · 支持策略
-        </p>
-        <p class="gate-foot">
-          时间窗口 <code>7D / 30D / 90D / 6M / ALL</code>，所有数字可以点击展开到原始观察记录。
-          完全离线，可以直接拷走或存档。
+      <div class="panel" data-reveal style="--d:320ms">
+        <p class="panel-h">洞察 · 严格区分三类</p>
+        <p class="insight-lead">
+          推断永远不会被写成事实。每一条洞察都带着证据和置信度，可以直接点回原始记录：
         </p>
         <div class="insight">
           <p><b>观察到的事实</b>过去 30 天主动分享作品的记录比上一周期多。</p>
@@ -483,7 +505,7 @@
         </div>
       </div>
 
-      <div class="panel" data-reveal style="--d:340ms">
+      <div class="panel" data-reveal style="--d:380ms">
         <p class="panel-h">测试 · VERIFIED, NOT VIBES</p>
 <pre class="tree-pre"><code><span class="pr">$</span> python tests/run_all.py     <span class="cm"># 130 项端到端验收</span>
 <span class="pr">$</span> python tests/simulate.py    <span class="cm"># 生成 A~E 五个模拟用户</span>

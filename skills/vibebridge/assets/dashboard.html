@@ -655,10 +655,15 @@ window.setTab = function (t) { TAB = t; render(); window.scrollTo({ top: 0, beha
 $("#subtitle").textContent = "生成于 " + dmin(DATA.meta.generated_at) +
   " · 数据版本 " + DATA.meta.schema_version + " · 完全离线，无任何网络请求";
 $("#disclaimer").textContent = DATA.meta.disclaimer;
+const warns = (DATA.meta && DATA.meta.content_warnings) || [];
 $("#foot").innerHTML = "VibeBridge " + esc(DATA.meta.skill_version) +
   " · 本文件为单文件离线报告，可直接保存或转移。<br>" +
   "所有数据均保存在本地，未上传任何第三方服务。数值用于长期自我观察，" +
-  "不用于评价、比较或分级。";
+  "不用于评价、比较或分级。" +
+  (warns.length
+    ? "<br>内容提示：你自己的记录里出现了 " + esc(warns.join("、")) +
+      "。它们已按原样保留在本报告中。"
+    : "");
 render();
 </script>
 </body>

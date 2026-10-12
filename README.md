@@ -2,6 +2,8 @@
 
 > 创造不是治疗，而是一座桥：把一个人内部的兴趣、想法和能力，一点点连接到更大的世界。
 
+![VibeBridge — 深空底色上，一座由发光星尘构成的悬索桥](docs/assets/og.jpg)
+
 一个长期运行的个人成长支持系统，以 Vibe Coding 和创造活动为低压力入口。它在你正常使用 AI 的过程中安静地积累行为数据，逐渐理解你适合什么样的交互方式，并在恰当的时候提供**完全可以拒绝**的下一步。
 
 **这不是医疗工具。** 它不诊断、不评估、不判断"治愈程度"，也不把"看起来像正常人"当成目标。
@@ -130,6 +132,14 @@ python ~/.claude/skills/vibebridge/scripts/vb.py doctor
 > **可能的解读** — 这可能意味着低压力的公开表达正在变得容易，也可能只是最近项目性质不同。
 >
 > **可选的下一步** — 保持现在的节奏就好，不需要升级到实时群聊。
+
+仓库里带一份生成好的报告（虚构示例用户，约 8 周数据），克隆后本地打开
+[`skills/vibebridge/examples/demo_report.html`](skills/vibebridge/examples/demo_report.html)，
+或直接在[介绍页](https://aiflyf.github.io/vibebridge/)里嵌着点。下面是它真实渲染的样子：
+
+![真实报告 · 总览页：维度数值、记录条数与置信度](docs/assets/report-overview.png)
+
+![真实报告 · 洞察页：事实 / 解读 / 下一步严格分栏，每条带证据编号](docs/assets/report-insights.png)
 
 ## 置信度模型
 

@@ -29,11 +29,14 @@ def propose(objective, context="", domain="expression", difficulty=2,
     if domain not in schema.DOMAINS:
         raise ValueError("未知维度: " + str(domain))
 
+    # objective / suggested_action 是系统对用户说话的声音：这里硬拦。
+    # 发生在"创建之前"，不销毁任何数据，agent 可以直接换一种说法重试，
+    # 是安全且可行动的。用户自己的记录（outcome/notes）走 check_user_text。
     safety.assert_clean(objective, "experiment.objective")
     safety.assert_clean(suggested_action, "experiment.suggested_action")
 
     data = _all()
-    eid = "experiment_" + str(len(data["items"]) + 1).zfill(3)
+    eid = schema.next_id("experiment", [r.get("id") for r in data["items"]], 3)
     rec = {
         "id": eid,
         "created_at": now_ts or schema.now(),
@@ -109,8 +112,12 @@ def complete(eid, result, outcome="", stress=0.0, engagement=0.0,
     rec = get(eid)
     if not rec:
         return None
-    safety.assert_clean(outcome, "experiment.outcome")
-    safety.assert_clean(notes, "experiment.notes")
+    # outcome / notes 是用户对自己经历的记录，不是系统措辞：只警告，不拦截。
+    warnings = []
+    for field, value in (("experiment.outcome", outcome), ("experiment.notes", notes)):
+        hits = safety.check_user_text(value, field)
+        if hits:
+            warnings.append({"where": field, "terms": hits})
 
     def apply(r):
         r.update({
@@ -126,7 +133,10 @@ def complete(eid, result, outcome="", stress=0.0, engagement=0.0,
     g = growth_mod.record_outcome(rec["domain"], result, stress=stress,
                                   now_ts=now_ts, note=outcome)
     store.log_event("EXPERIMENT_COMPLETE", eid + " " + result + " -> " + g["change"])
-    return {"experiment": rec, "growth": g}
+    out = {"experiment": rec, "growth": g}
+    if warnings:
+        out["content_warnings"] = warnings
+    return out
 
 
 def listing(limit=None, result=None, domain=None):
@@ -145,6 +155,9 @@ def stats():
     for r in items:
         by_result[r["result"]] = by_result.get(r["result"], 0) + 1
     closed = [r for r in items if r["result"] in TERMINAL]
+    # 用户拒绝（cancelled）不计入成功率分母 —— "选择不参与"是一个正当选择，
+    # 不是一次失败的尝试，把它算进分母等于悄悄惩罚拒绝。
+    attempted = [r for r in closed if r["result"] != "cancelled"]
     accepted = [r for r in items if r.get("accepted") is True]
     return {
         "total": len(items),
@@ -152,10 +165,11 @@ def stats():
         "accepted": len(accepted),
         "declined": sum(1 for r in items if r.get("accepted") is False),
         "pending": sum(1 for r in items if r["result"] == "pending"),
+        "attempted": len(attempted),
         "by_result": by_result,
         "acceptance_rate": round(len(accepted) / len(items), 3) if items else 0.0,
-        "success_rate": (round(by_result.get("successful", 0) / len(closed), 3)
-                         if closed else 0.0),
+        "success_rate": (round(by_result.get("successful", 0) / len(attempted), 3)
+                         if attempted else 0.0),
     }
 
 

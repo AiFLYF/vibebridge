@@ -32,7 +32,10 @@ MEANINGFUL_DELTA = 8.0
 
 
 def _item(kind, text, confidence=None, evidence=None, source=""):
-    safety.assert_clean(text, "insight." + kind)
+    # 洞察文本 = 系统模板 + 用户数据插值（信念陈述、项目名……）。
+    # 模板是静态可审查的；插值来自用户自己的记录，所以这里只警告不拦截 ——
+    # 用户的一个项目名不应该让整份洞察或报告生成失败。
+    safety.check_user_text(text, "insight." + kind)
     return {"kind": kind, "kind_label": KIND_LABELS[kind], "text": text,
             "confidence": confidence, "evidence": evidence or [], "source": source}
 

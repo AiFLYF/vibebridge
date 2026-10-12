@@ -9,9 +9,34 @@ from datetime import datetime, timezone
 SCHEMA_VERSION = "1.0.0"
 SKILL_VERSION = "1.1.0"
 
+# 观察摘录的统一上限。schema 校验与 config.privacy.excerpt_max_chars
+# 必须同源，所以两边都引用这个常量。
+EXCERPT_MAX_CHARS = 240
+
 
 def now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def next_id(prefix, existing, width=3):
+    """Derive the next numeric id from the largest existing one.
+
+    Counting items (len + 1) silently reuses an id after any delete or
+    compaction, which corrupts every reference pointing at the old record
+    (observations -> experiment_id, sessions -> experiments, ...). Deriving
+    from the maximum is safe under any future deletion flow.
+    """
+    top = 0
+    head = prefix + "_"
+    for raw in existing:
+        s = str(raw or "")
+        if not s.startswith(head):
+            continue
+        try:
+            top = max(top, int(s[len(head):]))
+        except ValueError:
+            continue
+    return prefix + "_" + str(top + 1).zfill(width)
 
 
 # --------------------------------------------------------------------------
@@ -114,7 +139,7 @@ def default_config():
         "privacy": {
             "local_only": True,
             "store_raw_excerpts": True,
-            "excerpt_max_chars": 240,
+            "excerpt_max_chars": EXCERPT_MAX_CHARS,
         },
         "growth": {
             "enabled": True,
@@ -247,6 +272,6 @@ def validate_observation(o):
         "polarity": pol,
         "strength": strength,
         "domains": doms,
-        "excerpt": (o.get("excerpt") or "")[:240],
+        "excerpt": (o.get("excerpt") or "")[:EXCERPT_MAX_CHARS],
         "source": o.get("source", "conversation"),
     }

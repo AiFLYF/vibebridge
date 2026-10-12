@@ -20,7 +20,7 @@ def _all():
 
 def create(name, idea="", stack=None, ts=None):
     data = _all()
-    pid = "proj_" + str(len(data["items"]) + 1).zfill(4)
+    pid = schema.next_id("proj", [r.get("id") for r in data["items"]], 4)
     rec = {
         "id": pid,
         "name": name,
@@ -76,7 +76,11 @@ def update(pid, ts=None, event=None, **fields):
             target[k] = cur
         elif k in ("revisions", "feedback_received", "external_conversations",
                    "collaborators"):
-            target[k] = target.get(k, 0) + int(v) if fields.get("increment") else int(v)
+            # increment=True 时在现值上加，否则直接覆写。
+            if fields.get("increment"):
+                target[k] = target.get(k, 0) + int(v)
+            else:
+                target[k] = int(v)
         else:
             target[k] = v
     target.pop("increment", None)

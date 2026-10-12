@@ -4,7 +4,10 @@ Produces one self contained HTML file. No server, no CDN, no network access,
 no external fonts. All data is embedded, so the file keeps working years later
 and can be opened from a USB stick with the machine offline.
 
-Every string that reaches the page is run through the safety linter first.
+Safety: system-authored strings are hard-blocked at authoring time (see
+safety.assert_clean in insight/experiment). The user's own records are linted
+for awareness only and disclosed in meta.content_warnings -- a report is
+never held hostage by an ordinary word in the user's own data.
 """
 import json
 import shutil
@@ -98,19 +101,29 @@ def collect(window="30D", now=None):
         "sessions": session_mod.listing(limit=200),
         "growth": windows.get(window, {}).get("growth", {}),
     }
-    _safety_scan(payload)
+    # 系统自己写的静态措辞仍然硬拦（模板回归会在这里炸出来）。
+    safety.assert_clean(DISCLAIMER, "report.disclaimer")
+    # 用户自己的内容只清点、不拦截：报告永远不因为用户的用词而生成失败。
+    payload["meta"]["content_warnings"] = _content_notes(payload)
     return payload
 
 
-def _safety_scan(payload):
-    """Fail loudly rather than publish clinical framing into a report."""
+def _content_notes(payload):
+    """Note sensitive terms inside the user's own records. Never blocks.
+
+    The hard guarantee for system-authored text lives at authoring time
+    (safety.assert_clean in insight/experiment). Everything in the payload
+    that the user wrote about their own life is theirs; a hit is disclosed
+    in meta.content_warnings and logged, so the report can say what it
+    contains instead of silently failing.
+    """
     blob = json.dumps(payload, ensure_ascii=False)
     hits = safety.lint(blob)
     ignorable = {"diagnosis", "diagnose"}
-    hard = [h for h in hits if h.lower() not in ignorable]
-    if hard:
-        store.log_event("REPORT_SAFETY", "terms=" + ", ".join(hard))
-        raise ValueError("报告内容含有禁用措辞，已阻止生成: " + ", ".join(hard))
+    notes = [h for h in hits if h.lower() not in ignorable]
+    if notes:
+        store.log_event("REPORT_CONTENT_NOTE", "terms=" + ", ".join(notes))
+    return notes
 
 
 def render(payload):

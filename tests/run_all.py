@@ -596,6 +596,98 @@ def t_reset_scopes():
           all(v["level"] == 0 for v in g["domains"].values()))
 
 
+# ============================================================ 13 hardening
+def t_hardening():
+    section("13. 安全分级 / ID 唯一 / 并发锁 / 口径")
+    home = use("hardening")
+    cli("init", home=home)
+    purge()
+
+    # -- 13.1 用户自己的内容永不阻塞 --
+    p = cli("project", "create", "--name", "治愈系音乐可视化", home=home)
+    check("项目名含普通敏感词也能创建", p.get("ok"))
+    o = cli("observe", "--json", json.dumps([
+        {"category": "interest", "key": "av",
+         "statement": "用户在做音乐可视化", "domains": ["expression"]}]), home=home)
+    check("观察正常记录", o.get("ok"))
+    m = cli("milestone", "add", "--title", "完成治愈系 Demo", home=home)
+    check("里程碑标题含敏感词只警告不拦截",
+          m.get("ok") and m.get("content_warnings"), m.get("error"))
+    rep = cli("report", "--window", "30D", home=home)
+    check("报告不因用户用词而生成失败", rep.get("ok"), rep.get("error"))
+    ins = cli("insight", "--window", "30D", home=home)
+    check("洞察不因用户用词而失败", ins.get("ok"), ins.get("error"))
+    html = (Path(home) / "reports" / "latest.html").read_text(encoding="utf-8")
+    check("报告数据内含内容警告", '"content_warnings"' in html)
+
+    # -- 13.2 系统自己的措辞仍然硬拦 --
+    bad = cli("experiment", "propose", "--objective", "本次实验旨在提高治愈率",
+              "--force", home=home)
+    check("系统措辞仍被硬拦",
+          bad.get("ok") is False and "禁用措辞" in str(bad.get("error")), bad)
+
+    # -- 13.3 ID 从最大现存值推导 --
+    import schema as schema_mod
+    check("next_id 取最大现存值",
+          schema_mod.next_id("experiment",
+                             ["experiment_001", "experiment_010", "x"]) == "experiment_011")
+    check("next_id 空表从 1 开始",
+          schema_mod.next_id("proj", [], 4) == "proj_0001")
+
+    # -- 13.4 compact 之后观察 ID 不重复 --
+    purge()
+    import store as store_mod
+    import observe as observe_mod
+    os.environ["VIBEBRIDGE_HOME"] = str(home)
+    obs_fp = store_mod.paths.p("observations")
+    with open(obs_fp, "a", encoding="utf-8") as fh:
+        fh.write('{"id": "obs_999999", "ts": "2026-08-21T10:00:00Z", "bro\n')
+    rep2 = cli("doctor", "--repair", home=home)
+    check("doctor --repair 修复损坏行",
+          rep2.get("ok") and rep2.get("repair", {}).get("repaired") is True, rep2)
+    r = observe_mod.record([{"category": "interest", "key": "av2",
+                             "statement": "修复后再记录一条", "domains": ["expression"]}])
+    ids = [x.get("id") for x in store_mod.observations()]
+    check("compact 后新 ID 不与现存重复", len(ids) == len(set(ids)), ids)
+    others = [int(i[4:]) for i in ids if i != r["ids"][0]]
+    check("新 ID 紧随最大现存值",
+          r["ids"][0] == "obs_" + str(max(others) + 1).zfill(6), r["ids"])
+
+    # -- 13.5 用户拒绝不计入成功率分母 --
+    e1 = cli("experiment", "propose", "--objective", "尝试发布作品",
+             "--force", home=home)["experiment"]["id"]
+    cli("experiment", "accept", "--id", e1, home=home)
+    cli("experiment", "complete", "--id", e1, "--result", "successful", home=home)
+    e2 = cli("experiment", "propose", "--objective", "尝试回复评论",
+             "--force", home=home)["experiment"]["id"]
+    cli("experiment", "decline", "--id", e2, home=home)
+    st = cli("experiment", "list", home=home).get("stats", {})
+    check("用户拒绝不计入成功率分母",
+          st.get("success_rate") == 1.0 and st.get("declined") == 1
+          and st.get("attempted") == 1, st)
+
+    # -- 13.6 并发写锁 --
+    purge()
+    import store as store_mod2
+    os.environ["VIBEBRIDGE_HOME"] = str(home)
+    with store_mod2.exclusive_lock():
+        env = dict(os.environ)
+        env["PYTHONIOENCODING"] = "utf-8"
+        try:
+            q = subprocess.run([sys.executable, str(CORE / "vb.py"), "doctor"],
+                               capture_output=True, text=True, encoding="utf-8",
+                               env=env, timeout=40)
+            blocked = json.loads(q.stdout)
+            check("持锁时其他写入进程被拒绝且不死锁",
+                  blocked.get("ok") is False, blocked)
+        except subprocess.TimeoutExpired:
+            check("持锁时其他写入进程被拒绝且不死锁", False, "timeout")
+    check("命令结束后锁文件被释放",
+          not (Path(home) / store_mod2.LOCK_NAME).exists())
+    after = cli("doctor", home=home)
+    check("释放后命令恢复正常", after.get("ok"))
+
+
 # ==================================================================== main
 def main():
     print("=" * 68)
@@ -607,7 +699,7 @@ def main():
 
     for fn in [t_init, t_memory, t_refusal, t_gating, t_growth, t_pipeline,
                t_personas, t_resilience, t_edges, t_volume, t_privacy,
-               t_reset_scopes]:
+               t_reset_scopes, t_hardening]:
         try:
             fn()
         except Exception as e:
